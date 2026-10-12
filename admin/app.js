@@ -495,12 +495,16 @@
               : '<span class="b mut" style="height:22px;font-size:12px">Foydalanuvchi</span><a class="link" href="#/user/' + esc(x.target_user_id) + '">' + esc(x.target_name || "—") + "</a>";
             var acts = x.status === "new" ? '<button class="btn soft" type="button" data-rep="in_progress" data-id="' + x.id + '">Ko\'rib chiqish</button>' : "";
             if (x.status === "new" || x.status === "in_progress") acts += '<button class="btn pri" type="button" data-rep="resolved" data-id="' + x.id + '">Hal qilindi</button><button class="btn soft" type="button" data-rep="dismissed" data-id="' + x.id + '">Asossiz</button>';
+            var shots = (x.images || []).filter(function (u) { return /^https:\/\//.test(String(u)); });
             return "<tr><td><b>" + esc(x.reason) + "</b>" + (x.note ? '<small class="mut" style="display:block;font-size:13px">' + esc(x.note) + "</small>" : "") +
+              (shots.length ? '<span style="display:flex;gap:6px;margin-top:8px">' + shots.map(function (u, i) {
+                return '<a href="' + esc(u) + '" target="_blank" rel="noopener" title="Skrinshot ' + (i + 1) + '"><img src="' + esc(u) + '" alt="Skrinshot ' + (i + 1) + '" loading="lazy" style="display:block;width:48px;height:48px;object-fit:cover;border-radius:10px;background:var(--page)"></a>';
+              }).join("") + "</span>" : "") +
               '</td><td><span style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">' + tgt + "</span></td><td>" +
               (x.reporter_id ? '<a href="#/user/' + esc(x.reporter_id) + '" style="text-decoration:none">' + esc(x.reporter_name || "—") + "</a>" : "—") +
               '</td><td class="nw mut">' + ago(x.created_at) + "</td><td>" + badge(RST, x.status) + '</td><td><div class="row" style="justify-content:flex-end;flex-wrap:nowrap">' + acts + "</div></td></tr>";
           }).join("") + "</tbody></table></div>"
-          : '<div class="empty">' + (RQ.s === "new" ? "Yangi shikoyat yo'q" : "Shikoyat topilmadi") + "<br><small>Ilovada shikoyat yuborish tugmasi qo'shilgach, ular shu yerda paydo bo'ladi.</small></div>") + "</section>";
+          : '<div class="empty">' + (RQ.s === "new" ? "Yangi shikoyat yo'q" : "Shikoyat topilmadi") + "<br><small>Ilovadan yuborilgan shikoyatlar (sabab, izoh, skrinshot) shu yerda paydo bo'ladi.</small></div>") + "</section>";
     }).catch(showErr);
   }
 
