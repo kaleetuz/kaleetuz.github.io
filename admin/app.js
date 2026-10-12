@@ -349,8 +349,11 @@
         rows.map(function (u) {
           return "<tr><td><a class=\"u\" href=\"#/user/" + esc(u.id) + '"><span class="ua">' + esc(ini(u.name, u.email)) + "</span><span><b>" + esc(u.name || "Ism kiritilmagan") +
             "</b><small>" + esc(u.email || u.phone || "") + "</small></span></a></td><td class=\"nw\">" + esc(ROLE[u.role] || u.role) + '</td><td style="font-weight:600">' + num(u.listings) +
-            "</td><td>" + (u.blocked ? '<span class="b bad">Bloklangan</span>' : '<span class="b ok">Faol</span>') + '</td><td class="nw mut">' + esc(PROV[u.provider] || u.provider || "—") +
-            '</td><td class="nw mut">' + esc(PLAT[u.platform] || "—") + '</td><td class="nw mut">' + dOnly(u.created_at) + '</td><td class="nw mut">' + ago(u.last_seen || u.last_sign_in_at) + "</td></tr>";
+            '</td><td><span style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">' + (u.blocked ? '<span class="b bad">Bloklangan</span>' : '<span class="b ok">Faol</span>') +
+            '<button class="btn ' + (u.blocked ? "soft" : "bad") + '" type="button" data-act="block" data-uid="' + esc(u.id) + '" data-v="' + (u.blocked ? 0 : 1) + '" style="height:32px;padding:0 12px;font-size:13px;white-space:nowrap">' +
+            ic("ban", 16) + (u.blocked ? "Blokdan chiqarish" : "Bloklash") + "</button></span>" + '</td><td class="nw mut">' + esc(PROV[u.provider] || u.provider || "—") +
+            '</td><td class="nw mut">' + esc(PLAT[u.platform] || "—") + '</td><td class="nw mut">' + dOnly(u.created_at) + '</td><td class="nw mut">' + ago(u.last_seen || u.last_sign_in_at) +
+            "</td></tr>";
         }).join("") + "</tbody></table></div>" + pager(UQ.page, UPS, r.total, "u")
         : '<div class="empty">' + (UQ.q || UQ.f !== "all" ? "Mos foydalanuvchi topilmadi" : "Hali ro'yxatdan o'tgan foydalanuvchi yo'q") + "</div>";
     }).catch(showErr);
@@ -495,6 +498,8 @@
               : '<span class="b mut" style="height:22px;font-size:12px">Foydalanuvchi</span><a class="link" href="#/user/' + esc(x.target_user_id) + '">' + esc(x.target_name || "—") + "</a>";
             var acts = x.status === "new" ? '<button class="btn soft" type="button" data-rep="in_progress" data-id="' + x.id + '">Ko\'rib chiqish</button>' : "";
             if (x.status === "new" || x.status === "in_progress") acts += '<button class="btn pri" type="button" data-rep="resolved" data-id="' + x.id + '">Hal qilindi</button><button class="btn soft" type="button" data-rep="dismissed" data-id="' + x.id + '">Asossiz</button>';
+            var bu = x.target_user_id || x.listing_owner;
+            if (bu) acts += '<button class="btn bad" type="button" data-act="block" data-uid="' + esc(bu) + '" data-v="1">' + ic("ban", 18) + (x.listing_id ? "Egasini bloklash" : "Bloklash") + "</button>";
             var shots = (x.images || []).filter(function (u) { return /^https:\/\//.test(String(u)); });
             return "<tr><td><b>" + esc(x.reason) + "</b>" + (x.note ? '<small class="mut" style="display:block;font-size:13px">' + esc(x.note) + "</small>" : "") +
               (shots.length ? '<span style="display:flex;gap:6px;margin-top:8px">' + shots.map(function (u, i) {
@@ -577,13 +582,16 @@
       });
       return;
     }
-    var uid = root.dataset.user;
+    var uid = d.uid || root.dataset.user;
     if (d.act === "block") {
       var on = d.v === "1";
       ask(on ? { title: "Foydalanuvchini bloklash", text: "U darhol hisobidan chiqariladi va qayta kira olmaydi. E'lonlari o'chirilmaydi.", input: "Sabab", required: true, ok: "Bloklash", danger: true }
              : { title: "Blokdan chiqarish", text: "Foydalanuvchi yana ilovaga kira oladi.", ok: "Blokdan chiqarish" }).then(function (v) {
         if (v == null) return;
-        rpc("admin_block_user", { p_id: uid, p_block: on, p_reason: typeof v === "string" ? v : "" }).then(function () { toast(on ? "Bloklandi." : "Blokdan chiqarildi."); userPage(uid) }).catch(showErr);
+        rpc("admin_block_user", { p_id: uid, p_block: on, p_reason: typeof v === "string" ? v : "" }).then(function () {
+          toast(on ? "Bloklandi." : "Blokdan chiqarildi.");
+          var rn = route().name; if (rn === "users") loadUsers(); else if (rn === "reports") loadReports(); else userPage(uid);
+        }).catch(showErr);
       });
       return;
     }
