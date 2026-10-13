@@ -43,8 +43,16 @@
     return String(email || "?").charAt(0).toUpperCase();
   }
   /* Profil rasmi: avval harflar ko'rinadi, rasm bazadan kelgach ustiga qo'yiladi */
-  function av(cls, uid, name, email) {
-    return '<span class="' + cls + '"' + (uid ? ' data-photo="' + esc(uid) + '"' : "") + ">" + esc(ini(name, email)) + "</span>";
+  /* Ilovadagi bilan bir xil: ism bosh harfi + Apple ranglaridagi gradient (rang ismga qarab, har doim bir xil);
+     ism bo'lmasa — kulrang fon va odamcha belgisi */
+  var AVC = [["#4a6fb5", "#1b2f5e"], ["#3e9a6e", "#14513a"], ["#5aaeff", "#0a6fe0"], ["#6fd3e8", "#1e9db8"], ["#6bdd8a", "#26a84a"], ["#ffbe5c", "#f0850a"], ["#ff7e98", "#e0304f"], ["#a5abb9", "#7d828e"]];
+  var IC_USER = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c1-4 4-6 8-6s7 2 8 6"/></svg>';
+  function avCol(n) { var h = 0, i; n = String(n || "").trim().toLowerCase(); for (i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) >>> 0; return AVC[h % AVC.length] }
+  function av(cls, uid, name) {
+    name = String(name || "").trim();
+    var c = name ? avCol(name) : AVC[7];
+    return '<span class="' + cls + ' avx" style="--g1:' + c[0] + ";--g2:" + c[1] + '"' + (uid ? ' data-photo="' + esc(uid) + '"' : "") + ' aria-hidden="true">' +
+      (name ? esc(Array.from(name)[0].toUpperCase()) : IC_USER) + "</span>";
   }
   var PHOTO = {}, PHOTO_OFF = false, photoBusy = false;
   function paintPhotos() {
@@ -253,7 +261,7 @@
       a("stats", "#/", "stats", "Statistika") + a("users", "#/users", "users", "Foydalanuvchilar") +
       a("listings", "#/listings", "home", "E'lonlar", NAVC.pending) + a("reports", "#/reports", "flag", "Shikoyatlar", NAVC.reports) +
       (dev ? a("admins", "#/admins", "shield", "Adminlar") : "") + "</nav>" +
-      '<div class="me"><span class="av">' + esc(ini(ME && (ME.name || ME.login))) + '</span><span class="who"><b>' + esc(ME && (ME.name || ME.login) || "") +
+      '<div class="me">' + av("av", "", ME && (ME.name || ME.login)) + '<span class="who"><b>' + esc(ME && (ME.name || ME.login) || "") +
       "</b><small>" + (dev ? "Dasturchi" : "Moderator") + "</small></span>" +
       '<button class="ib ghost" type="button" data-act="logout" aria-label="Chiqish">' + ic("out") + "</button></div>" +
       '</aside><main id="main">' + body + "</main></div>";
@@ -553,7 +561,7 @@
       if (route().name !== "admins") return;
       $("#ab").innerHTML = '<div class="split"><section class="card flush"><div style="padding:18px 20px 8px"><h2 style="font-size:18px">Panelga kira oladiganlar</h2></div><div class="tw"><table style="min-width:620px"><thead><tr><th>Admin / login</th><th>Rol</th><th>Qo\'shilgan</th><th>Oxirgi kirish</th><th><span class="sr">Amal</span></th></tr></thead><tbody>' +
         rows.map(function (a) {
-          return '<tr><td><span class="u"><span class="ua">' + esc(ini(a.display_name || a.login)) + "</span><span><b>" + esc(a.display_name || a.login) + (a.me ? " (siz)" : "") + "</b><small>" + esc(a.login) +
+          return '<tr><td><span class="u">' + av("ua", a.user_id, a.display_name || a.login) + "<span><b>" + esc(a.display_name || a.login) + (a.me ? " (siz)" : "") + "</b><small>" + esc(a.login) +
             "</small></span></span></td><td>" + (a.role === "developer" ? '<span class="b acc">Dasturchi</span>' : '<span class="b mut">Moderator</span>') + '</td><td class="nw mut">' + dOnly(a.created_at) +
             '</td><td class="nw mut">' + ago(a.last_sign_in_at) + '</td><td style="text-align:right">' + (a.me ? "" : '<button class="btn soft" type="button" style="color:var(--bad)" data-rm="' + esc(a.user_id) + '" data-n="' + esc(a.login) + '">Olib tashlash</button>') + "</td></tr>";
         }).join("") + "</tbody></table></div></section>" +
