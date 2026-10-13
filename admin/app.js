@@ -42,6 +42,36 @@
     if (n) { var p = n.split(/\s+/); return (p[0][0] + (p[1] ? p[1][0] : "")).toUpperCase() }
     return String(email || "?").charAt(0).toUpperCase();
   }
+  /* Profil rasmi: avval harflar ko'rinadi, rasm bazadan kelgach ustiga qo'yiladi */
+  function av(cls, uid, name, email) {
+    return '<span class="' + cls + '"' + (uid ? ' data-photo="' + esc(uid) + '"' : "") + ">" + esc(ini(name, email)) + "</span>";
+  }
+  var PHOTO = {}, PHOTO_OFF = false, photoBusy = false;
+  function paintPhotos() {
+    $$("[data-photo]").forEach(function (el) {
+      var url = PHOTO[el.dataset.photo];
+      if (!url || el.querySelector("img")) return;
+      var im = new Image(); im.alt = ""; im.decoding = "async"; im.referrerPolicy = "no-referrer";
+      im.onload = function () { el.classList.add("has-ph") };
+      im.onerror = function () { im.remove(); el.classList.remove("has-ph") };
+      im.src = url; el.appendChild(im);
+      if (el.classList.contains("pa")) { el.title = "Rasmni kattaroq ko'rish"; el.dataset.big = url }
+    });
+  }
+  function loadPhotos() {
+    if (PHOTO_OFF || photoBusy || !S) return;
+    var ids = [];
+    $$("[data-photo]").forEach(function (el) { var id = el.dataset.photo; if (!(id in PHOTO) && ids.indexOf(id) < 0) ids.push(id) });
+    if (!ids.length) return paintPhotos();
+    photoBusy = true;
+    rpc("admin_user_photos", { p_ids: ids.slice(0, 500) }).then(function (m) {
+      ids.forEach(function (id) { PHOTO[id] = (m && m[id]) || "" });
+    }, function (e) {
+      if (/admin_user_photos|PGRST202|Could not find/.test((e.code || "") + " " + (e.message || ""))) PHOTO_OFF = true;  /* SQL hali qo'shilmagan */
+    }).then(function () { photoBusy = false; paintPhotos(); if (!PHOTO_OFF) setTimeout(loadPhotos, 0) });
+  }
+  new MutationObserver(debounce(loadPhotos, 60)).observe(root, { childList: true, subtree: true });
+
   function debounce(fn, ms) { var t; return function () { var a = arguments; clearTimeout(t); t = setTimeout(function () { fn.apply(null, a) }, ms) } }
   function $(sel, el) { return (el || document).querySelector(sel) }
   function $$(sel, el) { return Array.prototype.slice.call((el || document).querySelectorAll(sel)) }
@@ -347,7 +377,7 @@
       var rows = r.rows || [];
       $("#ut").innerHTML = rows.length ? '<div class="tw"><table><thead><tr><th>Foydalanuvchi</th><th>Turi</th><th>E\'lonlar</th><th>Holat</th><th>Kirish usuli</th><th>Platforma</th><th>Ro\'yxatdan o\'tgan</th><th>Oxirgi faollik</th></tr></thead><tbody>' +
         rows.map(function (u) {
-          return "<tr><td><a class=\"u\" href=\"#/user/" + esc(u.id) + '"><span class="ua">' + esc(ini(u.name, u.email)) + "</span><span><b>" + esc(u.name || "Ism kiritilmagan") +
+          return "<tr><td><a class=\"u\" href=\"#/user/" + esc(u.id) + '">' + av("ua", u.id, u.name, u.email) + "<span><b>" + esc(u.name || "Ism kiritilmagan") +
             "</b><small>" + esc(u.email || u.phone || "") + "</small></span></a></td><td class=\"nw\">" + esc(ROLE[u.role] || u.role) + '</td><td style="font-weight:600">' + num(u.listings) +
             '</td><td><span style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">' + (u.blocked ? '<span class="b bad">Bloklangan</span>' : '<span class="b ok">Faol</span>') +
             '<button class="btn ' + (u.blocked ? "soft" : "bad") + '" type="button" data-act="block" data-uid="' + esc(u.id) + '" data-v="' + (u.blocked ? 0 : 1) + '" style="height:32px;padding:0 12px;font-size:13px;white-space:nowrap">' +
@@ -374,7 +404,7 @@
       var ls = u.listings_by_status || {}, total = 0; Object.keys(ls).forEach(function (k) { total += ls[k] });
       var dv = u.device || {};
       var h = '<div class="hd"><a href="#/users" class="btn soft" style="background:transparent;padding:0;color:var(--tx2)">' + ic("left", 18) + 'Foydalanuvchilar</a><div class="tools">' + themeBtn() + "</div></div>";
-      h += '<section class="prof"><span class="pa">' + esc(ini(u.name, u.email)) + '</span><div style="flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:8px"><h1>' +
+      h += '<section class="prof">' + av("pa", u.id, u.name, u.email) + '<div style="flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:8px"><h1>' +
         esc(u.name || "Ism kiritilmagan") + '</h1><span class="mut">' + esc(u.email || u.phone || "") + (u.provider ? " · " + esc(PROV[u.provider] || u.provider) + " orqali" : "") + "</span>" +
         '<div class="row" style="gap:8px">' + (u.blocked ? '<span class="b bad">Bloklangan</span>' : '<span class="b ok">Faol</span>') +
         (u.role ? '<span class="b acc">' + esc(ROLE[u.role] || u.role) + "</span>" : "") + (dv.platform ? '<span class="b mut">' + esc(PLAT[dv.platform]) + "</span>" : "") +
@@ -469,7 +499,7 @@
       '<span class="mut" style="font-size:14px;display:flex;gap:6px;align-items:center">' + ic("pin", 16) + esc(l.city + ", " + l.address) + "</span>" +
       (l.details ? '<span style="font-size:14px">' + esc(l.details) + "</span>" : "") +
       (l.moderation_note ? '<div class="box"><small>Moderator izohi</small><span>' + esc(l.moderation_note) + "</span></div>" : "") +
-      '<div class="ft">' + (l.owner_id ? '<a href="#/user/' + esc(l.owner_id) + '" style="color:var(--tx);font-weight:600;text-decoration:none">' + esc(l.owner_name || l.contact_name || "Muallif") + "</a>"
+      '<div class="ft">' + (l.owner_id ? '<a class="u sm" href="#/user/' + esc(l.owner_id) + '" style="color:var(--tx);font-weight:600">' + av("ua", l.owner_id, l.owner_name || l.contact_name) + "<span>" + esc(l.owner_name || l.contact_name || "Muallif") + "</span></a>"
         : "<span>" + esc(l.contact_name || "Namuna e'lon") + "</span>") + "<span>" + ago(l.created_at) + "</span></div>" +
       (a ? '<div class="ac">' + a + "</div>" : "") + "</div></article>";
   }
@@ -506,7 +536,7 @@
                 return '<a href="' + esc(u) + '" target="_blank" rel="noopener" title="Skrinshot ' + (i + 1) + '"><img src="' + esc(u) + '" alt="Skrinshot ' + (i + 1) + '" loading="lazy" style="display:block;width:48px;height:48px;object-fit:cover;border-radius:10px;background:var(--page)"></a>';
               }).join("") + "</span>" : "") +
               '</td><td><span style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">' + tgt + "</span></td><td>" +
-              (x.reporter_id ? '<a href="#/user/' + esc(x.reporter_id) + '" style="text-decoration:none">' + esc(x.reporter_name || "—") + "</a>" : "—") +
+              (x.reporter_id ? '<a class="u sm" href="#/user/' + esc(x.reporter_id) + '">' + av("ua", x.reporter_id, x.reporter_name) + "<span>" + esc(x.reporter_name || "—") + "</span></a>" : "—") +
               '</td><td class="nw mut">' + ago(x.created_at) + "</td><td>" + badge(RST, x.status) + '</td><td><div class="row" style="justify-content:flex-end;flex-wrap:nowrap">' + acts + "</div></td></tr>";
           }).join("") + "</tbody></table></div>"
           : '<div class="empty">' + (RQ.s === "new" ? "Yangi shikoyat yo'q" : "Shikoyat topilmadi") + "<br><small>Ilovadan yuborilgan shikoyatlar (sabab, izoh, skrinshot) shu yerda paydo bo'ladi.</small></div>") + "</section>";
@@ -552,6 +582,8 @@
     var l = $(".loading"); if (l) l.textContent = m;
   }
   document.addEventListener("click", function (e) {
+    var big = e.target.closest("[data-big]");
+    if (big) { window.open(big.dataset.big, "_blank", "noopener"); return }
     var t = e.target.closest("[data-act],[data-per],[data-uf],[data-pg],[data-ls],[data-mod],[data-rs],[data-rep],[data-rm]"); if (!t) return;
     var d = t.dataset;
     if (d.act === "theme") { save(TK, theme() === "dark" ? "light" : "dark"); applyTheme(); $$('[data-act="theme"]').forEach(function (b) { b.innerHTML = ic(theme() === "dark" ? "sun" : "moon") }); return }
