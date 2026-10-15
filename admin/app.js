@@ -115,7 +115,10 @@
     ban: '<circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/>',
     alert: '<path d="M12 3 2 21h20L12 3ZM12 10v5M12 18h.01"/>',
     refresh: '<path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/>',
-    plus: '<path d="M12 5v14M5 12h14"/>'
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    money: '<rect x="3" y="6" width="18" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.5"/><path d="M6.5 9.5v5M17.5 9.5v5"/>',
+    trash: '<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6"/>',
+    check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>'
   };
   function ic(n, s) { return '<svg width="' + (s || 20) + '" height="' + (s || 20) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + I[n] + "</svg>" }
 
@@ -259,7 +262,8 @@
       '<a class="brand" href="#/"><span class="logo" style="width:40px;height:40px"><img src="logo.png" alt=""></span><span><b>Kaleet</b><small>Admin panel</small></span></a>' +
       '<nav class="nav" aria-label="Asosiy menyu">' +
       a("stats", "#/", "stats", "Statistika") + a("users", "#/users", "users", "Foydalanuvchilar") +
-      a("listings", "#/listings", "home", "E'lonlar", NAVC.pending) + a("reports", "#/reports", "flag", "Shikoyatlar", NAVC.reports) +
+      a("listings", "#/listings", "home", "E'lonlar", (NAVC.pending || 0) + (NAVC.review || 0)) + a("reports", "#/reports", "flag", "Shikoyatlar", NAVC.reports) +
+      a("revenue", "#/revenue", "money", "Daromad") +
       (dev ? a("admins", "#/admins", "shield", "Adminlar") : "") + "</nav>" +
       '<div class="me">' + av("av", "", ME && (ME.name || ME.login)) + '<span class="who"><b>' + esc(ME && (ME.name || ME.login) || "") +
       "</b><small>" + (dev ? "Dasturchi" : "Moderator") + "</small></span>" +
@@ -417,7 +421,7 @@
         '<div class="row" style="gap:8px">' + (u.blocked ? '<span class="b bad">Bloklangan</span>' : '<span class="b ok">Faol</span>') +
         (u.role ? '<span class="b acc">' + esc(ROLE[u.role] || u.role) + "</span>" : "") + (dv.platform ? '<span class="b mut">' + esc(PLAT[dv.platform]) + "</span>" : "") +
         (dv.lang ? '<span class="b mut">' + esc(LANGN[dv.lang]) + " tili</span>" : "") + "</div></div>" +
-        '<div class="row"><button class="btn soft" type="button" data-act="warn">' + ic("alert", 18) + "Ogohlantirish</button>" +
+        '<div class="row"><button class="btn soft" type="button" data-act="grant">' + ic("money", 18) + "Hamyonga qo'shish</button><button class=\"btn soft\" type=\"button\" data-act=\"warn\">" + ic("alert", 18) + "Ogohlantirish</button>" +
         '<button class="btn bad" type="button" data-act="block" data-v="' + (u.blocked ? 0 : 1) + '">' + ic("ban", 18) + (u.blocked ? "Blokdan chiqarish" : "Bloklash") + "</button></div></section>";
       h += '<section class="stat4" aria-label="E\'lonlar">' + [["Jami e'lonlar", total, ""], ["Faol", ls.active, "ok"], ["Moderatsiyada", ls.pending, "warn"], ["Rad etilgan", ls.rejected, "bad"], ["Arxivda", ls.archived, ""]].map(function (x) {
         return "<div><span>" + x[0] + '</span><b style="' + (x[2] ? "color:var(--" + x[2] + ")" : "") + '">' + num(x[1] || 0) + "</b></div>";
@@ -483,33 +487,78 @@
     rpc("admin_listings", { p_status: LQ.s, p_search: LQ.q, p_category: LQ.cat, p_city: LQ.city, p_limit: LPS, p_offset: LQ.page * LPS }).then(function (r) {
       if (route().name !== "listings") return;
       var c = r.counts || {}, all = 0; Object.keys(c).forEach(function (k) { all += c[k] });
-      NAVC.pending = c.pending || 0;
+      NAVC.pending = c.pending || 0; NAVC.review = c.review || 0;
+      var rv = c.review || 0, pd = c.paid || 0; delete c.review; delete c.paid; all = 0; Object.keys(c).forEach(function (k) { all += c[k] });
       $(".hd p").textContent = "Jami " + num(all) + " ta e'lon";
-      $("#lt").innerHTML = [["active", "Faol"], ["pending", "Moderatsiyada"], ["rejected", "Rad etilgan"], ["archived", "Arxiv"], ["all", "Hammasi"]].map(function (x) {
-        return '<button type="button" class="tab' + (LQ.s === x[0] ? " on" : "") + '" data-ls="' + x[0] + '" aria-pressed="' + (LQ.s === x[0]) + '">' + x[1] + ' <span class="b mut" style="height:22px">' + num(x[0] === "all" ? all : c[x[0]] || 0) + "</span></button>";
+      $("#lt").innerHTML = [["review", "To'lovli · tekshirilmagan"], ["pending", "Moderatsiyada"], ["active", "Faol"], ["paid", "Pullik"], ["rejected", "Rad etilgan"], ["archived", "Arxiv"], ["all", "Hammasi"]].map(function (x) {
+        var n = x[0] === "all" ? all : x[0] === "review" ? rv : x[0] === "paid" ? pd : c[x[0]] || 0;
+        return '<button type="button" class="tab' + (LQ.s === x[0] ? " on" : "") + '" data-ls="' + x[0] + '" aria-pressed="' + (LQ.s === x[0]) + '">' + x[1] + ' <span class="b ' + (x[0] === "review" && n ? "warn" : "mut") + '" style="height:22px">' + num(n) + "</span></button>";
       }).join("");
       var cs = $("#lcity"); if (cs.options.length <= 1) (r.cities || []).sort().forEach(function (x) { var o = document.createElement("option"); o.textContent = x; o.value = x; if (x === LQ.city) o.selected = true; cs.appendChild(o) });
       var rows = r.rows || [];
       $("#lg").innerHTML = rows.length ? '<div class="lgrid">' + rows.map(listingCard).join("") + "</div>" +
         (r.total > LPS ? '<section class="card flush" style="margin-top:16px">' + pager(LQ.page, LPS, r.total, "l") + "</section>" : "")
-        : '<div class="card empty">' + (LQ.s === "pending" ? "Moderatsiya kutayotgan e'lon yo'q" : "Mos e'lon topilmadi") + "</div>";
+        : '<div class="card empty">' + (LQ.s === "pending" ? "Moderatsiya kutayotgan e'lon yo'q" : LQ.s === "review" ? "Tekshirilmagan pullik e'lon yo'q" : "Mos e'lon topilmadi") + "</div>";
     }).catch(showErr);
   }
+  function som(n) { return num(n) + " so'm" }
+  function promoBox(l) {
+    var now = Date.now(), t = [], ps = l.purchases || [];
+    if (l.top_until && Date.parse(l.top_until) > now) t.push('<span class="b acc">TOP · ' + dOnly(l.top_until) + " gacha</span>");
+    if (l.vip_until && Date.parse(l.vip_until) > now) t.push('<span class="b warn">VIP · ' + dOnly(l.vip_until) + " gacha</span>");
+    if (l.autobump_until && Date.parse(l.autobump_until) > now) t.push('<span class="b mut">Avto-ko\'tarish · ' + dOnly(l.autobump_until) + " gacha</span>");
+    if (l.bumps_left) t.push('<span class="b mut">Ko\'tarish: ' + num(l.bumps_left) + "</span>");
+    if (!ps.length && !t.length) return "";
+    var sum = 0; ps.forEach(function (p) { sum += p.amount });
+    return '<div class="box"><small>Pullik xizmatlar' + (ps.length ? " · jami " + som(sum) : "") + "</small>" + (t.length ? '<span class="row" style="gap:6px;flex-wrap:wrap">' + t.join("") + "</span>" : "") +
+      ps.map(function (p) { return '<span style="font-size:13px;display:flex;justify-content:space-between;gap:8px"><span>' + esc(p.title) + " · " + esc(PMN[p.method] || p.method) + (p.test ? ' <span class="b mut" style="height:18px;font-size:11px">sinov</span>' : "") +
+        '</span><span class="mut">' + som(p.amount) + " · " + dt(p.created_at) + "</span></span>" }).join("") + "</div>";
+  }
+  var PMN = { wallet: "Hamyon", click: "Click", payme: "Payme", admin: "Admin" };
   function listingCard(l) {
-    var a = "";
-    if (l.status === "active" || l.status === "pending") a += '<button class="btn bad" type="button" data-mod="rejected" data-id="' + l.id + '">Rad etish</button>';
+    var a = "", paid = !!l.paid_at;
+    if (l.review_needed) a += '<button class="btn pri" type="button" data-rev="' + l.id + '">' + ic("check", 18) + "Ko'rib chiqildi</button>";
+    if (!paid && (l.status === "active" || l.status === "pending")) a += '<button class="btn bad" type="button" data-mod="rejected" data-id="' + l.id + '">Rad etish</button>';
     if (l.status === "pending" || l.status === "rejected") a += '<button class="btn pri" type="button" data-mod="active" data-id="' + l.id + '">' + (l.status === "pending" ? "Tasdiqlash" : "Qayta faollashtirish") + "</button>";
-    if (l.status === "active") a += '<button class="btn soft" type="button" data-mod="archived" data-id="' + l.id + '">Arxivlash</button>';
+    if (l.status === "active" && !paid) a += '<button class="btn soft" type="button" data-mod="archived" data-id="' + l.id + '">Arxivlash</button>';
+    if (l.owner_id) a += '<button class="btn bad" type="button" data-del="' + l.id + '" data-paid="' + (paid ? 1 : 0) + '">' + ic("trash", 18) + "O'chirish</button>";
     return '<article class="lc"><div class="ph">' + (l.image ? '<img src="' + esc(l.image) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : ic("photo", 40)) +
       '<span class="b acc">' + esc(l.category) + "</span>" + (l.photos ? '<span class="n">' + num(l.photos) + " rasm</span>" : "") + "</div>" +
-      '<div class="bd"><div class="row" style="justify-content:space-between;gap:8px"><span class="mut" style="font-size:13px">№ ' + l.id + "</span>" + badge(LST, l.status) + "</div>" +
+      '<div class="bd"><div class="row" style="justify-content:space-between;gap:8px"><span class="mut" style="font-size:13px">№ ' + l.id + "</span><span class=\"row\" style=\"gap:6px\">" + (l.review_needed ? '<span class="b warn">To\'lov bilan faollashgan</span>' : paid ? '<span class="b acc">Pullik</span>' : "") + badge(LST, l.status) + "</span></div>" +
       "<h3>" + esc(l.title) + '</h3><span class="pr">' + esc(l.price) + "</span>" +
       '<span class="mut" style="font-size:14px;display:flex;gap:6px;align-items:center">' + ic("pin", 16) + esc(l.city + ", " + l.address) + "</span>" +
       (l.details ? '<span style="font-size:14px">' + esc(l.details) + "</span>" : "") +
-      (l.moderation_note ? '<div class="box"><small>Moderator izohi</small><span>' + esc(l.moderation_note) + "</span></div>" : "") +
+      (l.moderation_note ? '<div class="box"><small>Moderator izohi</small><span>' + esc(l.moderation_note) + "</span></div>" : "") + promoBox(l) +
+      (l.note ? '<div class="box"><small>Tavsif</small><span style="white-space:pre-line">' + esc(l.note) + "</span></div>" : "") +
+      (l.owner_phone ? '<span class="mut" style="font-size:13px">Tel: +' + esc(String(l.owner_phone).replace(/^\+/, "")) + "</span>" : "") +
       '<div class="ft">' + (l.owner_id ? '<a class="u sm" href="#/user/' + esc(l.owner_id) + '" style="color:var(--tx);font-weight:600">' + av("ua", l.owner_id, l.owner_name || l.contact_name) + "<span>" + esc(l.owner_name || l.contact_name || "Muallif") + "</span></a>"
         : "<span>" + esc(l.contact_name || "Namuna e'lon") + "</span>") + "<span>" + ago(l.created_at) + "</span></div>" +
       (a ? '<div class="ac">' + a + "</div>" : "") + "</div></article>";
+  }
+
+  /* ---------- Daromad ---------- */
+  var REVP = 30;
+  function revenuePage() {
+    root.innerHTML = shell("revenue", header("Daromad", "Pullik xizmatlar va Kaleet hamyoni") + '<div id="rvb"><div class="card empty">Yuklanmoqda…</div></div>');
+    rpc("admin_revenue", { p_days: REVP }).then(function (r) {
+      if (route().name !== "revenue") return;
+      var mx = 1; (r.days || []).forEach(function (x) { mx = Math.max(mx, x.amount) });
+      var h = (r.test ? '<div class="card" style="border:1px solid var(--warn,#f5a623);margin-bottom:16px"><b>Sinov rejimi yoqilgan.</b> Click va Payme to\'lovlari haqiqiy pul yechmasdan «muvaffaqiyatli» hisoblanadi. Ular quyida «sinov» belgisi bilan ko\'rsatiladi.</div>' : "") +
+        '<div class="seg" role="group" aria-label="Davr" style="margin-bottom:16px">' + [7, 30, 90, 365].map(function (p) {
+          return '<button type="button" data-rper="' + p + '" class="' + (REVP === p ? "on" : "") + '" aria-pressed="' + (REVP === p) + '">' + (p === 365 ? "1 yil" : p + " kun") + "</button>" }).join("") + "</div>" +
+        '<section class="stat4" style="margin-bottom:16px">' + kpi("Davr bo'yicha tushum", num(r.period) + ' <small style="font-size:15px;font-weight:600">so\'m</small>', '<span class="mut" style="font-size:13px">so\'nggi ' + REVP + " kun</span>") +
+        kpi("Jami haqiqiy tushum", num(r.total) + ' <small style="font-size:15px;font-weight:600">so\'m</small>', '<span class="mut" style="font-size:13px">sinov to\'lovlarisiz</span>') +
+        kpi("Hamyonlar to'ldirildi", num(r.topups) + ' <small style="font-size:15px;font-weight:600">so\'m</small>', '<span class="mut" style="font-size:13px">so\'nggi ' + REVP + " kun</span>") +
+        kpi("Hamyonlardagi qoldiq", num(r.wallets) + ' <small style="font-size:15px;font-weight:600">so\'m</small>', '<span class="mut" style="font-size:13px">foydalanuvchilar mablag\'i</span>') + "</section>" +
+        ((r.days || []).length ? '<section class="card" style="margin-bottom:16px"><h2>Kunlar bo\'yicha</h2>' + r.days.map(function (x) {
+          return '<div style="display:flex;align-items:center;gap:10px;font-size:14px;min-height:30px"><span style="width:90px" class="mut">' + dOnly(x.day) + '</span><span style="flex:1;height:10px;border-radius:5px;background:var(--bg3)"><span style="display:block;height:100%;border-radius:5px;background:var(--acc,#0878b8);width:' + Math.max(2, Math.round(100 * x.amount / mx)) + '%"></span></span><b style="width:120px;text-align:right">' + som(x.amount) + "</b></div>" }).join("") + "</section>" : "") +
+        '<section class="card" style="margin-bottom:16px"><h2>Xizmatlar bo\'yicha</h2>' + ((r.products || []).length ? r.products.map(function (x) {
+          return '<div class="li"><span><b>' + esc(x.title) + "</b><small>" + num(x.n) + " ta xarid</small></span><b>" + som(x.amount) + "</b></div>" }).join("") : '<div class="empty">Hali xarid yo\'q</div>') + "</section>" +
+        '<section class="card"><h2>Oxirgi xaridlar</h2>' + ((r.recent || []).length ? r.recent.map(function (x) {
+          return '<div class="li"><span><b>' + esc(x.title) + (x.test ? ' <span class="b mut" style="height:18px;font-size:11px">sinov</span>' : "") + "</b><small>" + esc((x.user_name || "—") + " · " + (PMN[x.method] || x.method) + " · " + dt(x.created_at)) +
+            (x.listing_id ? ' · <a class="link" href="#/listings?s=all&q=' + x.listing_id + '">' + esc(x.listing_title || ("№ " + x.listing_id)) + "</a>" : "") + "</small></span><b>" + som(x.amount) + "</b></div>" }).join("") : '<div class="empty">Hali xarid yo\'q</div>') + "</section>";
+      $("#rvb").innerHTML = h;
+    }).catch(function (e) { $("#rvb").innerHTML = '<div class="card empty">' + esc(errText(e)) + "<br><small>Supabase'da app_update_5.sql ishga tushirilganini tekshiring.</small></div>" });
   }
 
   /* ---------- 5. Shikoyatlar ---------- */
@@ -592,7 +641,7 @@
   document.addEventListener("click", function (e) {
     var big = e.target.closest("[data-big]");
     if (big) { window.open(big.dataset.big, "_blank", "noopener"); return }
-    var t = e.target.closest("[data-act],[data-per],[data-uf],[data-pg],[data-ls],[data-mod],[data-rs],[data-rep],[data-rm]"); if (!t) return;
+    var t = e.target.closest("[data-act],[data-per],[data-uf],[data-pg],[data-ls],[data-mod],[data-rs],[data-rep],[data-rm],[data-rev],[data-del],[data-rper]"); if (!t) return;
     var d = t.dataset;
     if (d.act === "theme") { save(TK, theme() === "dark" ? "light" : "dark"); applyTheme(); $$('[data-act="theme"]').forEach(function (b) { b.innerHTML = ic(theme() === "dark" ? "sun" : "moon") }); return }
     if (d.act === "pw") { var i = t.previousElementSibling; i.type = i.type === "password" ? "text" : "password"; t.setAttribute("aria-label", i.type === "password" ? "Parolni ko'rsatish" : "Parolni yashirish"); return }
@@ -603,6 +652,22 @@
     if (d.pg) { var p = d.pg.split(":"); if (p[0] === "u") { UQ.page = Math.max(0, UQ.page + +p[1]); loadUsers() } else { LQ.page = Math.max(0, LQ.page + +p[1]); loadListings() } window.scrollTo(0, 0); return }
     if (d.ls) { LQ.s = d.ls; LQ.page = 0; loadListings(); return }
     if (d.rs) { RQ.s = d.rs; loadReports(); return }
+    if (d.rev) { rpc("admin_listing_reviewed", { p_id: +d.rev }).then(function () { toast("Belgilandi: ko'rib chiqildi."); loadListings() }).catch(showErr); return }
+    if (d.del) {
+      ask({ title: "E'lonni o'chirish", text: "E'lon butunlay o'chiriladi. Egasiga sabab bilan xabar boradi." + (d.paid === "1" ? " Bu pullik e'lon — to'langan summa qaytarilmaydi." : ""),
+            input: "Sabab (egasiga ko'rinadi)", ph: "Masalan: soxta rasmlar, noto'g'ri narx, takroriy e'lon", required: true, ok: "O'chirish", danger: true }).then(function (v) {
+        if (v) rpc("admin_delete_listing", { p_id: +d.del, p_reason: v }).then(function () { toast("E'lon o'chirildi, egasiga xabar yuborildi."); loadListings() }).catch(showErr);
+      });
+      return;
+    }
+    if (d.rper) { REVP = +d.rper; revenuePage(); return }
+    if (d.act === "grant") {
+      ask({ title: "Hamyonga qo'shish", text: "Summa foydalanuvchi hamyoniga qo'shiladi (manfiy son — yechiladi).", input: "Summa, so'm", ph: "Masalan: 50000", required: true, ok: "Qo'shish" }).then(function (v) {
+        var n = Math.round(Number(String(v || "").replace(/[^0-9-]/g, ""))); if (!v) return; if (!n) { toast("Summani raqam bilan kiriting."); return }
+        rpc("admin_wallet_grant", { p_user: uid, p_amount: n, p_note: "Kaleet bonusi" }).then(function (r) { toast("Hamyon: " + som(r.balance)) }).catch(showErr);
+      });
+      return;
+    }
     if (d.mod) {
       var st = d.mod, id = +d.id;
       var o = st === "rejected" ? { title: "E'lonni rad etish", text: "E'lon ilovada boshqalarga ko'rinmay qoladi. Egasi uni o'zi qayta faollashtira olmaydi.", input: "Sabab (egasiga va adminlarga ko'rinadi)", ph: "Masalan: rasmlar boshqa obyektga tegishli", required: true, ok: "Rad etish", danger: true }
@@ -653,6 +718,7 @@
     if (path === "/listings") return { name: "listings", params: params };
     if (path === "/reports") return { name: "reports", params: params };
     if (path === "/admins") return { name: "admins", params: params };
+    if (path === "/revenue") return { name: "revenue", params: params };
     return { name: "stats", params: params };
   }
   function render() {
@@ -670,7 +736,7 @@
     }
     if (r.name === "login") { location.hash = "#/"; return }
     window.scrollTo(0, 0);
-    ({ stats: statsPage, users: usersPage, listings: listingsPage, reports: reportsPage, admins: adminsPage }[r.name] || function () { userPage(r.id) })();
+    ({ stats: statsPage, users: usersPage, listings: listingsPage, reports: reportsPage, admins: adminsPage, revenue: revenuePage }[r.name] || function () { userPage(r.id) })();
   }
   window.addEventListener("hashchange", render);
   render();
