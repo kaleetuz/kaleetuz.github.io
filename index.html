@@ -58,7 +58,7 @@ h1,h2,h3,p{margin:0}
 .hdr.open .mnav{display:block}
 
 /* hero */
-.hero{display:flex;flex-wrap:wrap;align-items:center;gap:56px;padding-top:72px;padding-bottom:88px}
+.hero{display:flex;flex-wrap:wrap;align-items:center;gap:56px;padding-top:40px;padding-bottom:72px;min-height:calc(100vh - 68px);min-height:calc(100svh - 68px)}
 .hero-txt{flex:1 1 460px;min-width:0;display:flex;flex-direction:column;gap:26px}
 .tag{font-size:20px;font-weight:300;letter-spacing:.04em;color:var(--tx2)}
 .hero h1{font-size:64px;line-height:1.05;font-weight:500;letter-spacing:-.04em}
@@ -480,6 +480,15 @@ var UZ = {soon:"Tez orada App Store va Google Play'da"};
   try { saved = new URLSearchParams(location.search).get("lang") || localStorage.getItem("kaleet.lang"); } catch(e){}
   if (!saved && /^ru\b/i.test(navigator.language || "")) saved = "ru";
   if (saved === "ru") setLang("ru");
+
+  // kompyuterda telefon ekran balandligiga sig'sin
+  var pb = document.querySelector(".phone-box");
+  function fitPhone(){
+    if (innerWidth <= 760) { pb.style.removeProperty("--s"); return; }
+    var s = Math.min(1, Math.max(.55, (innerHeight - 68 - 72) / 876));
+    pb.style.setProperty("--s", s.toFixed(3));
+  }
+  fitPhone(); addEventListener("resize", fitPhone);
 
   var hdr = document.getElementById("hdr"), mb = document.getElementById("menuBtn");
   mb.addEventListener("click", function(){ var o = hdr.classList.toggle("open"); mb.setAttribute("aria-expanded", o ? "true" : "false"); });
