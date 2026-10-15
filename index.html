@@ -1,7 +1,501 @@
-<!doctype html><html lang="uz"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kaleet</title><style>:root{--bg:#fff;--tx:#111;--tx2:#5c5c5c;--ln:#e5e5e5}@media (prefers-color-scheme:dark){:root{--bg:#000;--tx:#f2f2f2;--tx2:#a0a0a0;--ln:#2a2a2a}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
-main{max-width:720px;margin:0 auto;padding:40px 20px 64px}a{color:inherit}h1{font-size:30px;line-height:1.2;margin:0 0 6px;letter-spacing:-.02em}
-h2{font-size:19px;margin:32px 0 8px}p,li{color:var(--tx)}small,.m{color:var(--tx2)}nav{display:flex;gap:16px;margin-bottom:28px;font-size:15px}
-.lang{display:inline-flex;gap:10px;margin:18px 0 0;font-size:15px}hr{border:0;border-top:1px solid var(--ln);margin:48px 0}ul{padding-left:20px}</style></head><body><main><nav><a href="./">Kaleet</a><a href="privacy.html">Maxfiylik siyosati</a><a href="terms.html">Foydalanish shartlari</a></nav><h1>Kaleet</h1><p class="m">Ko'chmas mulkni sotish va ijaraga berish e'lonlari · Объявления о продаже и аренде недвижимости</p>
-<p><a href="privacy.html">Maxfiylik siyosati / Политика конфиденциальности</a><br><a href="terms.html">Foydalanish shartlari / Условия использования</a></p>
-<p class="m">Aloqa: <a href="mailto:kaleet.uz@gmail.com">kaleet.uz@gmail.com</a></p></main></body></html>
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kaleet — ko'chmas mulk e'lonlari bitta ilovada</title>
+<meta name="description" content="Kaleet — O'zbekiston bo'ylab ko'chmas mulkni sotish, sotib olish, uzoq va qisqa muddatli ijara e'lonlari ilovasi. iPhone va Android uchun.">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kaleet">
+<meta property="og:title" content="Kaleet — ko'chmas mulk e'lonlari bitta ilovada">
+<meta property="og:description" content="Soting, sotib oling, ijaraga bering va oling — butun O'zbekiston bo'ylab.">
+<meta property="og:image" content="https://kaleet.uz/assets/apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"KInter";src:url("assets/fonts/InterVariable.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
+:root{--bg:#fff;--bg2:#f2f2f7;--bg3:#e5e5ea;--tx:#000;--tx2:#6c6c70;--ln:rgba(60,60,67,.14);--bar:rgba(255,255,255,.72);--fade:rgba(255,255,255,0);color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#000;--bg2:#1c1c1e;--bg3:#2c2c2e;--tx:#fff;--tx2:#98989f;--ln:rgba(235,235,245,.16);--bar:rgba(24,24,27,.66);--fade:rgba(0,0,0,0)}.dl>div{background:#1c1c1e;box-shadow:inset 0 0 0 .5px var(--ln)}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","KInter","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.4}
+a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--tx);outline-offset:3px;border-radius:8px}
+img{display:block;max-width:100%}
+h1,h2,h3,p{margin:0}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+.muted{color:var(--tx2)}
+.eyebrow{font-size:15px;font-weight:500;color:var(--tx2)}
+.h2{font-size:42px;line-height:1.1;font-weight:500;letter-spacing:-.035em}
+.logo{display:flex;align-items:center;gap:10px}
+.logo svg{width:30px;height:30px;fill:currentColor}
+.logo span{font-size:24px;font-weight:400;letter-spacing:-.03em}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:46px;padding:0 24px;border-radius:23px;background:var(--tx);color:var(--bg);font-size:16px;font-weight:500;border:0;cursor:pointer;font-family:inherit}
+.btn:hover{opacity:.85}
+.stores{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.stores a{display:block;line-height:0;border-radius:9px}
+.stores img{height:56px;width:auto}
+
+/* header */
+.hdr{position:sticky;top:0;z-index:20;background:var(--bar);-webkit-backdrop-filter:saturate(200%) blur(24px);backdrop-filter:saturate(200%) blur(24px);border-bottom:.5px solid var(--ln)}
+.hdr .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:68px}
+.nav{display:flex;gap:26px;font-size:15px;font-weight:500;color:var(--tx2)}
+.nav a:hover{color:var(--tx)}
+.hdr-r{display:flex;align-items:center;gap:12px}
+.seg{display:flex;padding:2px;border-radius:9px;background:var(--bg3)}
+.seg button{border:0;height:30px;padding:0 12px;border-radius:7px;background:transparent;color:var(--tx2);font:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--bg);color:var(--tx);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.menu-btn{display:none;width:44px;height:44px;border:0;background:transparent;color:var(--tx);place-items:center;cursor:pointer}
+.menu-btn svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.mnav{display:none;padding:4px 20px 16px;border-top:.5px solid var(--ln);background:var(--bg)}
+.mnav a{display:flex;justify-content:space-between;align-items:center;height:52px;font-size:18px;border-bottom:.5px solid var(--ln)}
+.mnav a:last-child{border:0}
+.mnav a b{font-weight:400}
+.mnav a span{color:var(--tx2)}
+.hdr.open .mnav{display:block}
+
+/* hero */
+.hero{display:flex;flex-wrap:wrap;align-items:center;gap:56px;padding-top:72px;padding-bottom:88px}
+.hero-txt{flex:1 1 460px;min-width:0;display:flex;flex-direction:column;gap:26px}
+.tag{font-size:20px;font-weight:300;letter-spacing:.04em;color:var(--tx2)}
+.hero h1{font-size:64px;line-height:1.05;font-weight:500;letter-spacing:-.04em}
+.hero p{max-width:500px;font-size:19px;line-height:1.5;color:var(--tx2)}
+.hero-ph{flex:1 1 420px;min-width:0;display:flex;justify-content:center}
+
+/* iPhone */
+.phone-box{--s:1;position:relative;width:calc(417px*var(--s));height:calc(876px*var(--s));flex:none}
+.phone{position:absolute;left:0;top:0;width:417px;height:876px;transform:scale(var(--s));transform-origin:0 0}
+.phone .b{position:absolute;width:4px;background:#6e6a65}
+.phone .b.l{left:-3px;border-radius:2px 0 0 2px}.phone .b.r{right:-3px;border-radius:0 2px 2px 0}
+.phone .body{position:absolute;inset:0;border-radius:68px;background:linear-gradient(145deg,#b9b4ad 0%,#8d8882 22%,#a8a39c 50%,#7d7973 78%,#a49f98 100%);box-shadow:0 50px 100px -20px rgba(0,0,0,.35),0 30px 60px -30px rgba(0,0,0,.4)}
+.phone .bezel{position:absolute;inset:3px;border-radius:65px;background:#050505;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.phone .scr{position:absolute;left:12px;top:12px;width:393px;height:852px;border-radius:56px;overflow:hidden;background:#fff}
+.sbar{position:relative;height:59px;display:flex;align-items:center;justify-content:space-between;padding:6px 30px 0 52px;color:#000;font-family:-apple-system,"SF Pro Text","KInter",sans-serif}
+.sbar time{font-size:17px;font-weight:600;letter-spacing:-.02em}
+.sbar .ic{display:flex;align-items:center;gap:6px}
+.sbar svg{fill:currentColor}
+.bat{position:relative;display:flex;align-items:center}
+.bat i{width:25px;height:12px;border-radius:4px;border:1px solid currentColor;opacity:.4}
+.bat b{position:absolute;left:2px;top:2px;width:18px;height:8px;border-radius:2px;background:currentColor}
+.bat u{width:1.5px;height:4px;margin-left:1px;border-radius:0 1px 1px 0;background:currentColor;opacity:.4}
+.island{position:absolute;left:50%;top:11px;width:126px;height:37px;margin-left:-63px;border-radius:19px;background:#000}
+.phone .scr img{width:393px;height:auto}
+.homebar{position:absolute;left:50%;bottom:8px;width:140px;height:5px;margin-left:-70px;border-radius:3px;background:#000;opacity:.85}
+
+/* about */
+.about{display:flex;flex-wrap:wrap;gap:48px;padding:56px;border-radius:36px;background:var(--bg2);border:.5px solid var(--ln)}
+.about>div:first-child{flex:1 1 340px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.about-txt{flex:1 1 460px;min-width:0;display:flex;flex-direction:column;gap:18px;font-size:18px;line-height:1.6;color:var(--tx2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding-top:6px}
+.chips span{height:38px;padding:0 16px;border-radius:19px;display:flex;align-items:center;background:var(--bg);color:var(--tx);font-size:15px;font-weight:500}
+
+/* features */
+.sec{padding-top:104px}
+.sec-h{display:flex;flex-direction:column;gap:12px;max-width:620px;margin-bottom:36px}
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}
+.feat{padding:32px 28px 28px;border-radius:28px;background:var(--bg2);border:.5px solid var(--ln);display:flex;flex-direction:column;gap:12px}
+.num{width:46px;height:46px;border-radius:23px;background:var(--tx);color:var(--bg);display:grid;place-items:center;font-size:15px;font-weight:500;flex:none}
+.feat h3{margin-top:4px;font-size:20px;font-weight:500;letter-spacing:-.02em}
+.feat p{font-size:16px;line-height:1.5;color:var(--tx2)}
+.vip{margin-top:16px;padding:2.5px;border-radius:30px;background:linear-gradient(115deg,#a8761a 0%,#d8a640 30%,#c8932c 42%,#fff6d2 50%,#c8932c 58%,#d8a640 70%,#a8761a 100%);box-shadow:0 10px 30px rgba(200,150,40,.22)}
+.vip>div{border-radius:28px;background:var(--bg);padding:32px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px}
+.vip .t{flex:1 1 420px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.vip b{font-size:26px;font-weight:500;letter-spacing:-.03em}
+
+/* how */
+.how{margin-top:104px;background:var(--bg2);border-top:.5px solid var(--ln);border-bottom:.5px solid var(--ln)}
+.how .wrap{padding-top:96px;padding-bottom:96px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}
+.step{padding:28px;border-radius:28px;background:var(--bg);display:flex;flex-direction:column;gap:14px}
+.bars{display:flex;gap:6px}.bars i{flex:1;height:4px;border-radius:2px;background:var(--bg3)}.bars i.on{background:var(--tx)}
+.step h3{font-size:22px;font-weight:500;letter-spacing:-.02em}
+.step p{font-size:16px;line-height:1.5;color:var(--tx2)}
+
+/* support */
+.support{display:flex;flex-wrap:wrap;gap:40px}
+.support>div:first-child{flex:1 1 360px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.call{margin-top:8px;padding:28px;border-radius:28px;background:var(--tx);color:var(--bg);display:flex;align-items:center;justify-content:space-between;gap:16px}
+.call small{display:block;font-size:15px;opacity:.65}
+.call strong{display:block;font-size:34px;font-weight:500;letter-spacing:-.03em;white-space:nowrap}
+.call .ci{flex:none;width:56px;height:56px;border-radius:28px;background:var(--bg);color:var(--tx);display:grid;place-items:center}
+.call .ci svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.contacts{flex:1 1 460px;min-width:0;align-self:flex-start;border-radius:28px;background:var(--bg2);border:.5px solid var(--ln);padding:8px 24px}
+.contacts a,.contacts div{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:64px;font-size:17px;border-bottom:.5px solid var(--ln)}
+.contacts>:last-child{border:0}
+.contacts b{font-weight:400}
+.contacts span{font-size:16px;color:var(--tx2);text-align:right}
+
+/* faq */
+.faq{max-width:820px;margin:0 auto;padding:104px 24px 0;display:flex;flex-direction:column;gap:32px}
+.faq .h2{text-align:center}
+.qs{display:flex;flex-direction:column;gap:10px}
+details{border-radius:22px;background:var(--bg2);padding:0 22px}
+summary{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:62px;font-size:17px;font-weight:500;cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:22px;font-weight:300;color:var(--tx2);transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{padding-bottom:20px;font-size:16px;line-height:1.55;color:var(--tx2)}
+
+/* download */
+.dl{padding-top:104px;padding-bottom:96px}
+.dl>div{border-radius:40px;background:#000;color:#fff;padding:72px 32px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.dl .k{width:96px;height:100px;fill:#fff}
+.dl .w{margin-top:26px;font-size:44px;font-weight:400;letter-spacing:-.03em;line-height:1.15}
+.dl .r{width:36px;height:1px;margin-top:16px;background:rgba(255,255,255,.6)}
+.dl .tg{margin-top:14px;font-size:20px;font-weight:300;letter-spacing:.04em;color:#9a9a9a}
+.dl p{margin-top:28px;font-size:18px;color:#98989f}
+.dl .stores{justify-content:center;margin-top:26px}
+.dl .stores a{box-shadow:0 0 0 1px rgba(255,255,255,.25)}
+
+/* footer */
+.ftr{border-top:.5px solid var(--ln)}
+.ftr .wrap{padding-top:32px;padding-bottom:40px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:18px;font-size:14px;color:var(--tx2)}
+.ftr nav{display:flex;flex-wrap:wrap;gap:8px 22px}
+.ftr a:hover{color:var(--tx)}
+
+.toast{position:fixed;left:16px;right:16px;bottom:24px;margin:0 auto;width:fit-content;max-width:420px;transform:translateY(20px);opacity:0;pointer-events:none;padding:14px 22px;border-radius:24px;background:var(--tx);color:var(--bg);font-size:15px;font-weight:500;transition:opacity .25s,transform .25s;z-index:50;text-align:center}
+.toast.on{opacity:1;transform:none}
+
+/* ===== mobil ===== */
+@media (max-width:760px){
+  .d-only{display:none!important}
+  .wrap{padding:0 16px}
+  .hdr .wrap{height:56px;padding:0 8px 0 20px}
+  .nav,.hdr-r>.btn{display:none}
+  .hdr-r{gap:4px}
+  .seg button{height:28px;padding:0 9px;font-size:13px}
+  .menu-btn{display:grid}
+  .logo svg{width:26px;height:26px}.logo span{font-size:22px}
+  .h2{font-size:24px;line-height:1.15}
+  .eyebrow{font-size:14px}
+  .hero{flex-direction:column;align-items:center;text-align:center;gap:0;padding:32px 20px 0}
+  .hero-txt{flex:none;align-items:center;gap:14px}
+  .tag{font-size:16px}
+  .hero h1{max-width:310px;font-size:34px;line-height:1.08}
+  .hero p{max-width:310px;font-size:16px;line-height:1.45}
+  .hero .stores{justify-content:center;gap:8px;padding-top:4px}
+  .hero .stores img{height:46px}
+  .hero-ph{flex:none;position:relative;width:100%;height:470px;margin-top:32px;overflow:hidden}
+  .hero-ph::after{content:"";position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(to top,var(--bg) 15%,var(--fade))}
+  .phone-box{--s:.66}
+  .phone .body{box-shadow:none}
+  .about{flex-direction:column;padding:8px 4px 0;border:0;border-radius:0;background:none;gap:12px}
+  .about>div{width:100%}
+  .about>div:first-child{flex:none;gap:0}
+  .about>div:first-child .eyebrow{display:none}
+  .about-txt{flex:none;font-size:15px;line-height:1.5}
+  .about-txt p+p,.chips{display:none}
+  .sec{padding-top:18px}
+  .sec-h{display:none}
+  .feats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .feat{padding:16px;border-radius:22px;border:0;gap:10px}
+  .feat .num{width:36px;height:36px;border-radius:18px;font-size:13px}
+  .feat h3{margin:0;font-size:15px;line-height:1.25}
+  .feat p,.feat.m-hide{display:none}
+  .vip,.how{display:none}
+  .support{padding-top:36px;flex-direction:column;gap:10px}
+  .support>div{width:100%}
+  .support>div:first-child{flex:none;gap:10px}
+  .support>div:first-child .eyebrow,.support>div:first-child>p{display:none}
+  .call{margin:4px 0 0;padding:20px;border-radius:24px}
+  .call small{font-size:13px}
+  .call strong{font-size:24px}
+  .call .ci{width:48px;height:48px}
+  .contacts{flex:none;align-self:stretch;padding:0;border:0;background:none;display:grid;grid-template-columns:1fr;gap:8px}
+  .contacts a,.contacts div{min-height:52px;border:0;border-radius:26px;background:var(--bg2);justify-content:center;font-size:16px}
+  .contacts b{font-weight:500}
+  .contacts span,.contacts .d-row{display:none}
+  .faq{padding:32px 16px 0;gap:14px}
+  .faq .h2{text-align:left;padding:0 4px}
+  .qs{gap:8px}
+  details{border-radius:20px;padding:0 18px}
+  summary{min-height:56px;font-size:16px}
+  details p{font-size:15px;padding-bottom:16px}
+  .qs details:nth-child(n+4){display:none}
+  .dl{padding-top:32px;padding-bottom:28px}
+  .dl>div{border-radius:28px;padding:28px 20px}
+  .dl .k,.dl .r,.dl p{display:none}
+  .dl .w{margin:0;font-size:28px}
+  .dl .tg{margin-top:6px;font-size:15px}
+  .dl .stores{margin-top:20px;gap:8px}
+  .dl .stores img{height:44px}
+  .ftr .wrap{flex-direction:column-reverse;align-items:flex-start;padding:4px 20px 32px;gap:10px;font-size:13px}
+  .ftr nav{gap:6px 18px}
+}
+@media (min-width:761px){.m-only{display:none!important}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hdr" id="hdr">
+<div class="wrap">
+<a class="logo" href="#top" aria-label="Kaleet">
+<svg viewBox="20 20 1400 1470" aria-hidden="true"><use href="#key"></use></svg>
+<span>Kaleet</span>
+</a>
+<nav class="nav" aria-label="Asosiy menyu">
+<a href="#about" data-i="n_about">Kaleet haqida</a>
+<a href="#features" data-i="n_feat">Imkoniyatlar</a>
+<a href="#how" data-i="n_how">Qanday ishlaydi</a>
+<a href="#support" data-i="n_help">Yordam</a>
+<a href="#faq" data-i="n_faq">Savollar</a>
+</nav>
+<div class="hdr-r">
+<div class="seg" role="group" aria-label="Til / Язык">
+<button type="button" data-lang="uz" aria-pressed="true">UZ</button>
+<button type="button" data-lang="ru" aria-pressed="false">RU</button>
+</div>
+<a class="btn" href="#download" data-i="dl_btn">Yuklab olish</a>
+<button class="menu-btn" type="button" id="menuBtn" aria-expanded="false" aria-controls="mnav" aria-label="Menyu">
+<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h18"></path><path d="M3 16h18"></path></svg>
+</button>
+</div>
+</div>
+<nav class="mnav" id="mnav" aria-label="Menyu">
+<a href="#about"><b data-i="n_about">Kaleet haqida</b><span>›</span></a>
+<a href="#support"><b data-i="n_help">Yordam</b><span>›</span></a>
+<a href="#faq"><b data-i="n_faq">Savollar</b><span>›</span></a>
+</nav>
+</header>
+
+<main>
+<!-- HERO -->
+<section class="wrap hero" id="top">
+<div class="hero-txt">
+<span class="tag">Kalitimiz bir!</span>
+<h1 data-i="h1">Ko'chmas mulk e'lonlari bitta ilovada</h1>
+<p><span class="d-only" data-i="hero_d">Butun O'zbekiston bo'ylab uy, hovli, ofis va boshqa mulklarni soting, sotib oling, uzoq yoki qisqa muddatga ijaraga bering va oling.</span><span class="m-only" data-i="hero_m">Soting, sotib oling, ijaraga bering va oling butun O'zbekiston bo'ylab.</span></p>
+<div class="stores">
+<a href="#" data-store="ios"><img src="assets/app-store.svg" alt="Download on the App Store" width="168" height="56"></a>
+<a href="#" data-store="android"><img class="gp" src="assets/google-play-uz.svg" alt="Google Play orqali oling" width="189" height="56"></a>
+</div>
+</div>
+<div class="hero-ph">
+<div class="phone-box">
+<div class="phone" role="img" aria-label="Kaleet ilovasining bosh ekrani" data-i-aria="ph_alt">
+<i class="b l" style="top:150px;height:32px"></i><i class="b l" style="top:212px;height:62px"></i><i class="b l" style="top:290px;height:62px"></i><i class="b r" style="top:236px;height:96px"></i>
+<div class="body"></div><div class="bezel"></div>
+<div class="scr">
+<div class="sbar">
+<time>07:15</time>
+<span class="ic">
+<svg width="19" height="12" viewBox="0 0 19 12" aria-hidden="true"><rect x="0" y="8" width="3.2" height="4" rx="1"/><rect x="5" y="5.5" width="3.2" height="6.5" rx="1"/><rect x="10" y="3" width="3.2" height="9" rx="1"/><rect x="15" y="0" width="3.2" height="12" rx="1"/></svg>
+<svg width="17" height="12" viewBox="0 0 17 12" aria-hidden="true"><path d="M8.5 2.4c2.4 0 4.6.9 6.2 2.5l1.2-1.2A10.5 10.5 0 0 0 8.5.7 10.5 10.5 0 0 0 1.1 3.7l1.2 1.2A8.8 8.8 0 0 1 8.5 2.4z"/><path d="M8.5 5.8c1.5 0 2.8.6 3.8 1.5l1.2-1.2a7 7 0 0 0-10 0l1.2 1.2c1-.9 2.3-1.5 3.8-1.5z"/><path d="M8.5 9.1c.6 0 1.1.2 1.5.6L8.5 11.3 7 9.7c.4-.4.9-.6 1.5-.6z"/></svg>
+<span class="bat"><i></i><b></b><u></u></span>
+</span>
+<span class="island"></span>
+</div>
+<img src="assets/app-home.jpg" alt="" width="1125" height="2311" fetchpriority="high">
+<span class="homebar"></span>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- KALEET HAQIDA -->
+<section class="wrap" id="about">
+<div class="about">
+<div>
+<span class="eyebrow" data-i="n_about">Kaleet haqida</span>
+<h2 class="h2" data-i="about_h">Kaleet — «kalit». Yangi uyingizga olib kiruvchi kalit.</h2>
+</div>
+<div class="about-txt">
+<p data-i="about_p1">Kaleet — O'zbekiston bo'ylab ko'chmas mulk e'lonlari platformasi. Sotuvchi va xaridor, mulk egasi va ijarachi shu yerda bir-birini topadi va to'g'ridan-to'g'ri bog'lanadi.</p>
+<p data-i="about_p2">Har bir e'lon moderatsiyadan o'tadi. Shubhali e'lon haqida shikoyat qilish mumkin, qoidabuzarlar esa bloklanadi.</p>
+<div class="chips" data-i-list="types"><span>Hovli</span><span>Kvartira</span><span>Yer maydoni</span><span>Ofis</span><span>Do'kon</span><span>Ombor</span><span>Savdo markazi</span><span>O'quv markazi</span><span>Restoran va kafe</span></div>
+</div>
+</div>
+</section>
+
+<!-- IMKONIYATLAR -->
+<section class="wrap sec" id="features">
+<div class="sec-h">
+<span class="eyebrow" data-i="n_feat">Imkoniyatlar</span>
+<h2 class="h2" data-i="feat_h">Ko'chmas mulk bilan bog'liq hamma narsa</h2>
+</div>
+<div class="feats">
+<div class="feat"><span class="num">01</span><h3 data-i="f1">Sotish va sotib olish</h3><p data-i="f1p">Mulkingizni sotuvga qo'ying yoki filtrlar orqali kerakli variantni tez toping.</p></div>
+<div class="feat"><span class="num">02</span><h3 data-i="f2">Uzoq muddatli ijara</h3><p data-i="f2p">Oylik va yillik ijara e'lonlari — ijarachi va mulk egasi uchun birdek qulay.</p></div>
+<div class="feat"><span class="num">03</span><h3 data-i="f3">Qisqa muddatli ijara</h3><p data-i="f3p">Kunlik va qisqa muddatli turar joy — safar yoki vaqtinchalik yashash uchun.</p></div>
+<div class="feat m-hide"><span class="num">04</span><h3 data-i="f4">To'g'ridan-to'g'ri aloqa</h3><p data-i="f4p">Mulk egasi bilan vositachisiz bog'laning — qo'ng'iroq yoki xabar orqali.</p></div>
+<div class="feat"><span class="num">05</span><h3 data-i="f5">Xaritada qidirish</h3><p data-i="f5p">Mulkni xaritada ko'ring va o'zingizga qulay hududni tanlang.</p></div>
+<div class="feat m-hide"><span class="num">06</span><h3 data-i="f6">Ishonchli e'lonlar</h3><p data-i="f6p">Moderatsiya, shikoyat tizimi va qoidabuzarlarni bloklash — xavfsiz muhit.</p></div>
+</div>
+<div class="vip">
+<div>
+<div class="t">
+<span class="eyebrow" data-i="vip_e">E'loningizni ko'proq odam ko'rsin</span>
+<b data-i="vip_h">Ko'tarish, TOP, VIP va avto-ko'tarish</b>
+<span class="muted" data-i="vip_p">Rieltor va agentliklar uchun paketlar. To'lov — Click, Payme yoki Kaleet hamyoni orqali.</span>
+</div>
+<a class="btn" href="#download" data-i="vip_btn">Ilovada sinab ko'ring</a>
+</div>
+</div>
+</section>
+
+<!-- QANDAY ISHLAYDI -->
+<section class="how" id="how">
+<div class="wrap">
+<div class="sec-h" style="display:flex">
+<span class="eyebrow" data-i="n_how">Qanday ishlaydi</span>
+<h2 class="h2" data-i="how_h">Uch qadamda e'lon joylang</h2>
+</div>
+<div class="steps">
+<div class="step"><div class="bars"><i class="on"></i><i></i><i></i></div><span class="eyebrow" data-i="s1n">1-qadam</span><h3 data-i="s1">Ilovani yuklab oling</h3><p data-i="s1p">App Store yoki Google Play'dan Kaleet'ni o'rnating va Google hisobingiz orqali kiring.</p></div>
+<div class="step"><div class="bars"><i class="on"></i><i class="on"></i><i></i></div><span class="eyebrow" data-i="s2n">2-qadam</span><h3 data-i="s2">E'lon yarating</h3><p data-i="s2p">Mulk turi, manzil, narx va rasmlarni qo'shing. Birinchi faol e'lon — bepul.</p></div>
+<div class="step"><div class="bars"><i class="on"></i><i class="on"></i><i class="on"></i></div><span class="eyebrow" data-i="s3n">3-qadam</span><h3 data-i="s3">Mijozlar bilan bog'laning</h3><p data-i="s3p">E'lon tekshiruvdan o'tgach chiqadi — qiziqqanlar siz bilan to'g'ridan-to'g'ri bog'lanadi.</p></div>
+</div>
+</div>
+</section>
+
+<!-- QO'LLAB-QUVVATLASH -->
+<section class="wrap sec support" id="support">
+<div>
+<span class="eyebrow" data-i="sup_e">Qo'llab-quvvatlash</span>
+<h2 class="h2"><span class="d-only" data-i="sup_h">Savol bormi? Biz yordam beramiz.</span><span class="m-only" data-i="sup_hm">Savol bormi? Qo'ng'iroq qiling.</span></h2>
+<p class="muted" style="font-size:18px;line-height:1.55" data-i="sup_p">Call-markaz e'lon joylash, to'lovlar, hisob va shikoyatlar bo'yicha yordam beradi.</p>
+<a class="call" href="tel:+998337138833">
+<span><small data-i="call">Call-markaz</small><strong>+998 33 713 88 33</strong></span>
+<span class="ci" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></span>
+</a>
+</div>
+<div class="contacts">
+<a href="mailto:kaleet.uz@gmail.com"><b data-i="mail">Elektron pochta</b><span>kaleet.uz@gmail.com ›</span></a>
+<div class="d-row"><b data-i="inapp">Ilova ichida</b><span data-i="inapp_v">Menyu → Yordam</span></div>
+</div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+<h2 class="h2"><span class="d-only" data-i="faq_h">Ko'p beriladigan savollar</span><span class="m-only" data-i="n_faq">Savollar</span></h2>
+<div class="qs">
+<details><summary data-i="q1">E'lon joylash pullikmi?</summary><p data-i="a1">Har bir foydalanuvchiga 1 ta faol e'lon bepul. Qo'shimcha e'lonlar hamda ko'tarish, TOP va VIP xizmatlari pullik.</p></details>
+<details><summary data-i="q2">E'lonim qachon chiqadi?</summary><p data-i="a2">Oddiy e'lonlar moderatsiyadan o'tgach chiqadi. Pullik xizmat ulangan e'lon darhol faollashadi.</p></details>
+<details><summary data-i="q3">Qanday to'lov usullari bor?</summary><p data-i="a3">Click, Payme yoki Kaleet hamyoni orqali. Hamyonni istalgan summaga to'ldirib, xizmatlar uchun to'laysiz.</p></details>
+<details><summary data-i="q4">Shubhali e'lonni ko'rsam nima qilaman?</summary><p data-i="a4">E'lon sahifasidagi «Shikoyat qilish» tugmasini bosing, sababini yozing va kerak bo'lsa skrinshot qo'shing.</p></details>
+<details><summary data-i="q5">Ilovaga qanday kiraman?</summary><p data-i="a5">Hozircha kirish Google hisobi orqali amalga oshiriladi.</p></details>
+</div>
+</section>
+
+<!-- YUKLAB OLISH -->
+<section class="wrap dl" id="download">
+<div>
+<svg class="k" viewBox="20 20 1400 1470" aria-hidden="true"><use href="#key"></use></svg>
+<span class="w">Kaleet</span>
+<span class="r"></span>
+<span class="tg"><span class="d-only">Kalitimiz bir!</span><span class="m-only" data-i="dl_tm">Kalitimiz bir! · Birinchi e'lon bepul</span></span>
+<p data-i="dl_p">iPhone va Android uchun. Birinchi e'lon — bepul.</p>
+<div class="stores">
+<a href="#" data-store="ios"><img src="assets/app-store.svg" alt="Download on the App Store" width="168" height="56" loading="lazy"></a>
+<a href="#" data-store="android"><img class="gp" src="assets/google-play-uz.svg" alt="Google Play orqali oling" width="189" height="56" loading="lazy"></a>
+</div>
+</div>
+</section>
+</main>
+
+<footer class="ftr">
+<div class="wrap">
+<span>© 2026 Kaleet. <span data-i="rights">Barcha huquqlar himoyalangan.</span></span>
+<nav aria-label="Huquqiy havolalar">
+<a href="privacy.html" data-i="privacy">Maxfiylik siyosati</a>
+<a href="terms.html" data-i="terms">Foydalanish shartlari</a>
+</nav>
+</div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- Kaleet kalit belgisi (ilovadagi bilan bir xil) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><g id="key"><path d="M97 88L87 99L80 112L77 124L75 141L65 274L64 275L64 287L63 288L63 300L62 301L62 313L61 314L61 326L60 327L60 339L59 340L59 352L58 353L58 365L57 366L57 378L56 379L56 391L53 417L53 429L50 455L50 467L49 468L39 604L37 617L31 711L30 712L30 748L34 768L40 786L50 804L73 831L252 1010L295 1051L307 1060L323 1068L344 1075L365 1079L389 1079L405 1077L641 1032L753 1012L767 1012L791 1018L806 1030L867 1089L1245 1465L1250 1468L1265 1473L1288 1474L1289 1475L1362 1473L1380 1470L1390 1465L1403 1450L1406 1444L1408 1433L1408 1412L1409 1411L1408 1253L1407 1252L1406 1225L1402 1215L1374 1184L1341 1151L1330 1142L1321 1138L1310 1138L1300 1142L1255 1176L1238 1176L1230 1170L1184 1124L1175 1113L1172 1105L1172 1095L1174 1087L1191 1046L1196 1030L1197 1020L1194 1008L1181 991L1144 954L1113 927L1095 928L1079 937L1064 950L1046 963L1036 966L1029 965L1014 954L899 840L875 818L867 812L853 805L841 802L823 801L795 804L506 852L474 853L460 850L435 838L414 819L249 652L245 642L240 624L240 606L241 605L243 565L252 472L265 310L271 270L275 262L283 255L290 252L300 250L346 245L469 235L481 233L492 233L504 231L515 231L516 230L527 230L539 228L574 226L575 225L615 223L616 222L643 222L659 226L669 231L681 240L764 320L771 324L778 326L798 326L962 289L974 284L983 276L989 267L992 255L992 247L990 240L985 232L971 216L856 101L797 44L772 34L757 31L735 30L734 31L710 31L709 32L664 34L663 35L635 36L621 38L607 38L592 40L578 40L549 43L534 43L533 44L519 44L490 47L378 54L377 55L351 56L350 57L173 70L119 76L105 82Z"/><path d="M568 384L558 386L548 391L540 397L513 424L506 434L501 446L501 451L504 457L515 471L543 499L556 507L565 507L577 500L610 468L620 456L624 448L624 439L615 425L587 397L576 388Z"/><path d="M652 477L640 484L608 515L598 527L595 535L596 544L603 556L615 570L633 588L645 598L653 601L658 601L666 599L671 596L709 559L715 552L718 546L719 532L716 526L706 514L678 487L664 478Z"/><path d="M566 572L554 573L537 586L503 622L500 630L500 634L503 643L515 659L543 687L551 693L560 696L571 694L582 686L614 654L620 647L624 639L624 626L616 614L587 585L577 577Z"/><path d="M471 481L466 481L460 483L444 493L418 519L412 527L406 540L406 548L418 565L447 594L461 603L472 602L489 589L521 556L526 548L528 541L527 534L520 524L489 493L479 485Z"/></g></defs></svg>
+
+<script>
+/* Do'kon havolalari: ilova chiqqach shu yerga yoziladi */
+var STORE = { ios: "", android: "" };
+
+var RU = {
+  n_about:"О Kaleet", n_feat:"Возможности", n_how:"Как это работает", n_help:"Поддержка", n_faq:"Вопросы",
+  dl_btn:"Скачать",
+  h1:"Объявления о недвижимости в одном приложении",
+  hero_d:"Продавайте, покупайте, сдавайте и снимайте дома, квартиры, офисы и другую недвижимость по всему Узбекистану — надолго или посуточно.",
+  hero_m:"Продавайте, покупайте, сдавайте и снимайте по всему Узбекистану.",
+  ph_alt:"Главный экран приложения Kaleet",
+  about_h:"Kaleet — «ключ». Ключ от вашего нового дома.",
+  about_p1:"Kaleet — платформа объявлений о недвижимости по всему Узбекистану. Продавец и покупатель, владелец и арендатор находят здесь друг друга и общаются напрямую.",
+  about_p2:"Каждое объявление проходит модерацию. На подозрительное объявление можно пожаловаться, а нарушители блокируются.",
+  types:["Дом","Квартира","Участок","Офис","Магазин","Склад","Торговый центр","Учебный центр","Ресторан и кафе"],
+  feat_h:"Всё, что связано с недвижимостью",
+  f1:"Продажа и покупка", f1p:"Выставьте недвижимость на продажу или быстро найдите нужный вариант с помощью фильтров.",
+  f2:"Долгосрочная аренда", f2p:"Помесячная и годовая аренда — удобно и арендатору, и владельцу.",
+  f3:"Краткосрочная аренда", f3p:"Посуточное жильё — для поездок и временного проживания.",
+  f4:"Прямая связь", f4p:"Связывайтесь с владельцем без посредников — звонком или сообщением.",
+  f5:"Поиск на карте", f5p:"Смотрите объекты на карте и выбирайте удобный район.",
+  f6:"Надёжные объявления", f6p:"Модерация, жалобы и блокировка нарушителей — безопасная среда.",
+  vip_e:"Пусть ваше объявление увидит больше людей", vip_h:"Поднятие, TOP, VIP и автоподнятие",
+  vip_p:"Пакеты для риелторов и агентств. Оплата — Click, Payme или кошелёк Kaleet.", vip_btn:"Попробовать в приложении",
+  how_h:"Разместите объявление в три шага",
+  s1n:"Шаг 1", s1:"Скачайте приложение", s1p:"Установите Kaleet из App Store или Google Play и войдите через Google.",
+  s2n:"Шаг 2", s2:"Создайте объявление", s2p:"Укажите тип, адрес, цену и добавьте фото. Первое активное объявление — бесплатно.",
+  s3n:"Шаг 3", s3:"Общайтесь с клиентами", s3p:"После проверки объявление публикуется — заинтересованные свяжутся с вами напрямую.",
+  sup_e:"Поддержка", sup_h:"Есть вопрос? Мы поможем.", sup_hm:"Есть вопрос? Позвоните нам.",
+  sup_p:"Колл-центр поможет с размещением объявлений, оплатой, аккаунтом и жалобами.",
+  call:"Колл-центр", mail:"Электронная почта", inapp:"В приложении", inapp_v:"Меню → Помощь",
+  faq_h:"Частые вопросы",
+  q1:"Размещение объявлений платное?", a1:"Каждому пользователю 1 активное объявление бесплатно. Дополнительные объявления, а также поднятие, TOP и VIP — платные.",
+  q2:"Когда появится моё объявление?", a2:"Обычные объявления публикуются после модерации. Объявление с платной услугой активируется сразу.",
+  q3:"Какие способы оплаты?", a3:"Click, Payme или кошелёк Kaleet. Пополните кошелёк на любую сумму и оплачивайте услуги.",
+  q4:"Что делать, если объявление подозрительное?", a4:"Нажмите «Пожаловаться» на странице объявления, укажите причину и при необходимости приложите скриншот.",
+  q5:"Как войти в приложение?", a5:"Пока вход выполняется через аккаунт Google.",
+  dl_tm:"Kalitimiz bir! · Первое объявление бесплатно",
+  dl_p:"Для iPhone и Android. Первое объявление — бесплатно.",
+  rights:"Все права защищены.", privacy:"Политика конфиденциальности", terms:"Условия использования",
+  soon:"Скоро в App Store и Google Play"
+};
+var UZ = {soon:"Tez orada App Store va Google Play'da"};
+
+(function(){
+  var html = document.documentElement;
+  document.querySelectorAll("[data-i]").forEach(function(el){ if(!(el.dataset.i in UZ)) UZ[el.dataset.i] = el.textContent; });
+  var phone = document.querySelector("[data-i-aria]"); UZ.ph_alt = phone.getAttribute("aria-label");
+  var chips = document.querySelector("[data-i-list]"); UZ.types = Array.from(chips.children).map(function(s){return s.textContent});
+  var lang = "uz";
+
+  function setLang(l){
+    lang = l; var D = l === "ru" ? RU : UZ;
+    html.lang = l;
+    document.querySelectorAll("[data-i]").forEach(function(el){ var v = D[el.dataset.i]; if(v) el.textContent = v; });
+    phone.setAttribute("aria-label", D.ph_alt);
+    Array.from(chips.children).forEach(function(s,i){ s.textContent = D.types[i]; });
+    document.querySelectorAll("img.gp").forEach(function(im){ im.src = "assets/google-play-" + l + ".svg"; im.alt = l === "ru" ? "Доступно в Google Play" : "Google Play orqali oling"; });
+    document.querySelectorAll("[data-lang]").forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.lang === l ? "true" : "false"); });
+    document.title = l === "ru" ? "Kaleet — объявления о недвижимости в одном приложении" : "Kaleet — ko'chmas mulk e'lonlari bitta ilovada";
+    try { localStorage.setItem("kaleet.lang", l); } catch(e){}
+  }
+  document.querySelectorAll("[data-lang]").forEach(function(b){ b.addEventListener("click", function(){ setLang(b.dataset.lang); }); });
+  var saved = null;
+  try { saved = new URLSearchParams(location.search).get("lang") || localStorage.getItem("kaleet.lang"); } catch(e){}
+  if (!saved && /^ru\b/i.test(navigator.language || "")) saved = "ru";
+  if (saved === "ru") setLang("ru");
+
+  var hdr = document.getElementById("hdr"), mb = document.getElementById("menuBtn");
+  mb.addEventListener("click", function(){ var o = hdr.classList.toggle("open"); mb.setAttribute("aria-expanded", o ? "true" : "false"); });
+  document.querySelectorAll("#mnav a").forEach(function(a){ a.addEventListener("click", function(){ hdr.classList.remove("open"); mb.setAttribute("aria-expanded","false"); }); });
+
+  var toast = document.getElementById("toast"), tt;
+  document.querySelectorAll("[data-store]").forEach(function(a){
+    var url = STORE[a.dataset.store];
+    if (url) { a.href = url; a.target = "_blank"; a.rel = "noopener"; return; }
+    a.addEventListener("click", function(e){
+      e.preventDefault();
+      toast.textContent = (lang === "ru" ? RU : UZ).soon;
+      toast.classList.add("on"); clearTimeout(tt); tt = setTimeout(function(){ toast.classList.remove("on"); }, 2600);
+    });
+  });
+})();
+</script>
+</body>
+</html>
