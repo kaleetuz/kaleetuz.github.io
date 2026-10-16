@@ -566,10 +566,17 @@
   var REVP = 30;
   function revenuePage() {
     root.innerHTML = shell("revenue", header("Daromad", "Pullik xizmatlar va Kaleet hamyoni") + '<div id="rvb"><div class="card empty">Yuklanmoqda…</div></div>');
-    rpc("admin_revenue", { p_days: REVP }).then(function (r) {
+    Promise.all([rpc("admin_revenue", { p_days: REVP }), rpc("admin_free_mode").catch(function () { return null })]).then(function (a) {
+      var r = a[0], fm = a[1];
       if (route().name !== "revenue") return;
       var mx = 1; (r.days || []).forEach(function (x) { mx = Math.max(mx, x.amount) });
-      var h = (r.test ? '<div class="card" style="border:1px solid var(--warn,#f5a623);margin-bottom:16px"><b>Sinov rejimi yoqilgan.</b> Click va Payme to\'lovlari haqiqiy pul yechmasdan «muvaffaqiyatli» hisoblanadi. Ular quyida «sinov» belgisi bilan ko\'rsatiladi.</div>' : "") +
+      var dev = ME && ME.role === "developer";
+      var h = (fm === true || fm === false ? '<section class="card" style="margin-bottom:16px;display:flex;flex-direction:row;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;min-height:0' + (fm ? ';border:1px solid var(--ok)' : '') + '"><div style="flex:1 1 300px;min-width:0"><h2 style="margin:0 0 6px;display:flex;align-items:center;gap:8px">' +
+          (fm ? 'Bepul davr <span class="b ok">Yoqilgan</span>' : 'Pullik rejim <span class="b acc">Yoqilgan</span>') + '</h2><span class="mut" style="font-size:14px">' +
+          (fm ? "Ilovada tariflar, paketlar, hamyon va reklama yashirilgan. Har bir foydalanuvchi 3 tagacha e'lon joylaydi va har bir e'lonni 5 martagacha bepul ko'taradi. To'lovlar qabul qilinmaydi."
+              : "Ilovada tariflar, paketlar, hamyon va reklama ko'rinadi. Bepul limit — 1 ta e'lon.") + "</span></div>" +
+          (dev ? '<button class="btn ' + (fm ? "pri" : "soft") + '" type="button" data-act="free" data-v="' + (fm ? 0 : 1) + '">' + (fm ? "Pullik rejimni yoqish" : "Bepul davrni yoqish") + "</button>" : "") + "</section>" : "") +
+        (r.test ? '<div class="card" style="border:1px solid var(--warn,#f5a623);margin-bottom:16px"><b>Sinov rejimi yoqilgan.</b> Click va Payme to\'lovlari haqiqiy pul yechmasdan «muvaffaqiyatli» hisoblanadi. Ular quyida «sinov» belgisi bilan ko\'rsatiladi.</div>' : "") +
         '<div class="seg" role="group" aria-label="Davr" style="margin-bottom:16px">' + [7, 30, 90, 365].map(function (p) {
           return '<button type="button" data-rper="' + p + '" class="' + (REVP === p ? "on" : "") + '" aria-pressed="' + (REVP === p) + '">' + (p === 365 ? "1 yil" : p + " kun") + "</button>" }).join("") + "</div>" +
         '<section class="stat4" style="margin-bottom:16px">' + kpi("Davr bo'yicha tushum", num(r.period) + ' <small style="font-size:15px;font-weight:600">so\'m</small>', '<span class="mut" style="font-size:13px">so\'nggi ' + REVP + " kun</span>") +
@@ -687,6 +694,15 @@
       return;
     }
     if (d.rper) { REVP = +d.rper; revenuePage(); return }
+    if (d.act === "free") {
+      var fon = d.v === "1";
+      ask(fon ? { title: "Bepul davrni yoqish", text: "Ilovada pullik xizmatlar yashiriladi: har bir foydalanuvchi 3 tagacha e'lon joylaydi va har bir e'lonni 5 martagacha bepul ko'taradi. To'lovlar qabul qilinmaydi.", ok: "Yoqish" }
+              : { title: "Pullik rejimni yoqish", text: "Ilovada tariflar, paketlar, hamyon va reklama qaytadi. Bepul limit 1 ta e'longa tushadi; bepul davrda joylangan e'lonlar faol qoladi. Foydalanuvchilar ilovani keyingi ochishda o'zgarishni ko'radi.", ok: "Pullik rejimni yoqish" }).then(function (v) {
+        if (!v) return;
+        rpc("admin_set_free_mode", { p_on: fon }).then(function () { toast(fon ? "Bepul davr yoqildi." : "Pullik rejim yoqildi."); revenuePage() }).catch(showErr);
+      });
+      return;
+    }
     if (d.act === "grant") {
       ask({ title: "Hamyonga qo'shish", text: "Summa foydalanuvchi hamyoniga qo'shiladi (manfiy son — yechiladi).", input: "Summa, so'm", ph: "Masalan: 50000", required: true, ok: "Qo'shish" }).then(function (v) {
         var n = Math.round(Number(String(v || "").replace(/[^0-9-]/g, ""))); if (!v) return; if (!n) { toast("Summani raqam bilan kiriting."); return }
