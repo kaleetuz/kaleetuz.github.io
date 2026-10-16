@@ -140,16 +140,20 @@
       d.innerHTML = '<div class="in" role="dialog" aria-modal="true" aria-labelledby="dlg-t"><h2 id="dlg-t">' + esc(o.title) + "</h2>" +
         (o.text ? "<p>" + esc(o.text) + "</p>" : "") +
         (o.input ? '<label class="field">' + esc(o.input) + '<textarea maxlength="' + (o.max || 300) + '" placeholder="' + esc(o.ph || "") + '"></textarea></label>' : "") +
-        '<div class="acts"><button class="btn soft" type="button" data-x="0">Bekor qilish</button><button class="btn ' + (o.danger ? "bad" : "pri") + '" type="button" data-x="1">' + esc(o.ok || "Tasdiqlash") + "</button></div></div>";
+        (o.word ? '<label class="field"><span>Tasdiqlash uchun katta harflarda <b style="color:var(--tx)">' + esc(o.word) + '</b> deb yozing</span><input type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="' + esc(o.word) + '"></label>' : "") +
+        '<div class="acts"><button class="btn soft" type="button" data-x="0">Bekor qilish</button><button class="btn ' + (o.danger ? "bad" : "pri") + '" type="button" data-x="1"' + (o.word ? " disabled" : "") + ">" + esc(o.ok || "Tasdiqlash") + "</button></div></div>";
       document.body.appendChild(d);
-      var ta = $("textarea", d); (ta || $('[data-x="1"]', d)).focus();
+      var ta = $("textarea", d), wi = o.word ? $("input", d) : null, okb = $('[data-x="1"]', d);
+      (ta || wi || okb).focus();
+      if (wi) wi.addEventListener("input", function () { okb.disabled = wi.value.trim() !== o.word });
       function done(v) { d.remove(); document.removeEventListener("keydown", key); res(v) }
-      function key(e) { if (e.key === "Escape") done(null) }
+      function key(e) { if (e.key === "Escape") done(null); else if (e.key === "Enter" && wi && !okb.disabled) done(true) }
       document.addEventListener("keydown", key);
       d.addEventListener("click", function (e) {
         if (e.target === d) return done(null);
         var x = e.target.closest("[data-x]"); if (!x) return;
         if (x.dataset.x === "0") return done(null);
+        if (wi && wi.value.trim() !== o.word) { wi.focus(); return }
         var v = ta ? ta.value.trim() : true;
         if (ta && o.required && !v) { ta.focus(); return }
         done(v);
@@ -192,6 +196,22 @@
         throw e;
       });
   }
+  /* VAQTINCHA: foydalanuvchining listing-photos/<id>/ papkasidagi barcha rasmlarni o'chirish */
+  function purgeFiles(id) {
+    function list() {
+      return token().then(function (tk) { return req("/storage/v1/object/list/listing-photos", { token: tk, body: { prefix: id + "/", limit: 1000, offset: 0 } }) });
+    }
+    function step(n) {
+      return list().then(function (a) {
+        var names = (a || []).filter(function (x) { return x && x.id && x.name }).map(function (x) { return id + "/" + x.name });
+        if (!names.length) return;
+        if (n > 20) throw E("storage_not_empty");
+        return token().then(function (tk) { return req("/storage/v1/object/listing-photos", { method: "DELETE", token: tk, body: { prefixes: names } }) })
+          .then(function () { return step(n + 1) });
+      });
+    }
+    return step(0);
+  }
   function errText(e) {
     var c = e && e.code || "";
     if (c === "network") return "Internet aloqasi yo'q. Qayta urinib ko'ring.";
@@ -199,6 +219,10 @@
     if (c === "cannot_block_admin") return "Adminni bloklab bo'lmaydi.";
     if (c === "login_not_found") return "Bu login Supabase'da topilmadi. Avval foydalanuvchini yarating.";
     if (c === "cannot_remove_self") return "O'zingizni olib tashlay olmaysiz.";
+    if (c === "cannot_delete_self") return "O'zingizni o'chira olmaysiz.";
+    if (c === "cannot_delete_admin") return "Adminni o'chirib bo'lmaydi. Avval uni adminlar ro'yxatidan olib tashlang.";
+    if (c === "storage_not_empty") return "Foydalanuvchi rasmlarini o'chirib bo'lmadi. Bazada app_update_8.sql o'rnatilganini tekshiring.";
+    if (/admin_delete_user/.test(c + (e.message || ""))) return "Bazada o'chirish funksiyasi yo'q (supabase/app_update_8.sql).";
     if (/admin_stats|Could not find the function|PGRST202/.test(c + (e.message || ""))) return "Bazada admin funksiyalari hali o'rnatilmagan (supabase/admin.sql).";
     return "Xatolik yuz berdi. Qayta urinib ko'ring.";
   }
@@ -422,7 +446,9 @@
         (u.role ? '<span class="b acc">' + esc(ROLE[u.role] || u.role) + "</span>" : "") + (dv.platform ? '<span class="b mut">' + esc(PLAT[dv.platform]) + "</span>" : "") +
         (dv.lang ? '<span class="b mut">' + esc(LANGN[dv.lang]) + " tili</span>" : "") + "</div></div>" +
         '<div class="row"><button class="btn soft" type="button" data-act="grant">' + ic("money", 18) + "Hamyonga qo'shish</button><button class=\"btn soft\" type=\"button\" data-act=\"warn\">" + ic("alert", 18) + "Ogohlantirish</button>" +
-        '<button class="btn bad" type="button" data-act="block" data-v="' + (u.blocked ? 0 : 1) + '">' + ic("ban", 18) + (u.blocked ? "Blokdan chiqarish" : "Bloklash") + "</button></div></section>";
+        '<button class="btn bad" type="button" data-act="block" data-v="' + (u.blocked ? 0 : 1) + '">' + ic("ban", 18) + (u.blocked ? "Blokdan chiqarish" : "Bloklash") + "</button>" +
+        /* VAQTINCHA: sinov profillarini tozalash (app_update_8.sql). Kerak bo'lmaganda olib tashlanadi. */
+        (ME && ME.role === "developer" ? '<button class="btn bad" type="button" data-act="purge">' + ic("trash", 18) + "Butunlay o'chirish</button>" : "") + "</div></section>";
       h += '<section class="stat4" aria-label="E\'lonlar">' + [["Jami e'lonlar", total, ""], ["Faol", ls.active, "ok"], ["Moderatsiyada", ls.pending, "warn"], ["Rad etilgan", ls.rejected, "bad"], ["Arxivda", ls.archived, ""]].map(function (x) {
         return "<div><span>" + x[0] + '</span><b style="' + (x[2] ? "color:var(--" + x[2] + ")" : "") + '">' + num(x[1] || 0) + "</b></div>";
       }).join("") + "</section>";
@@ -642,7 +668,7 @@
     var big = e.target.closest("[data-big]");
     if (big) { window.open(big.dataset.big, "_blank", "noopener"); return }
     var t = e.target.closest("[data-act],[data-per],[data-uf],[data-pg],[data-ls],[data-mod],[data-rs],[data-rep],[data-rm],[data-rev],[data-del],[data-rper]"); if (!t) return;
-    var d = t.dataset;
+    var d = t.dataset, uid = d.uid || root.dataset.user;
     if (d.act === "theme") { save(TK, theme() === "dark" ? "light" : "dark"); applyTheme(); $$('[data-act="theme"]').forEach(function (b) { b.innerHTML = ic(theme() === "dark" ? "sun" : "moon") }); return }
     if (d.act === "pw") { var i = t.previousElementSibling; i.type = i.type === "password" ? "text" : "password"; t.setAttribute("aria-label", i.type === "password" ? "Parolni ko'rsatish" : "Parolni yashirish"); return }
     if (d.act === "logout") { signOut(false); return }
@@ -687,7 +713,17 @@
       });
       return;
     }
-    var uid = d.uid || root.dataset.user;
+    if (d.act === "purge") {
+      ask({ title: "Foydalanuvchini butunlay o'chirish", text: "Hisob, profil, barcha e'lonlar va rasmlar, hamyon, tariflar va bildirishnomalar butunlay o'chiriladi. Bu amalni qaytarib bo'lmaydi. U qayta kirsa, yangi foydalanuvchi sifatida noldan boshlaydi.",
+            word: "TASDIQLAYMAN", ok: "Butunlay o'chirish", danger: true }).then(function (v) {
+        if (!v) return;
+        t.disabled = true; toast("O'chirilmoqda…");
+        purgeFiles(uid).then(function () { return rpc("admin_delete_user", { p_id: uid }) }).then(function () {
+          toast("Foydalanuvchi butunlay o'chirildi."); location.hash = "#/users";
+        }).catch(function (e) { t.disabled = false; showErr(e) });
+      });
+      return;
+    }
     if (d.act === "block") {
       var on = d.v === "1";
       ask(on ? { title: "Foydalanuvchini bloklash", text: "U darhol hisobidan chiqariladi va qayta kira olmaydi. E'lonlari o'chirilmaydi.", input: "Sabab", required: true, ok: "Bloklash", danger: true }
