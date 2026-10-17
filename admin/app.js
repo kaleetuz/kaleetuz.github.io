@@ -550,7 +550,7 @@
     if (l.owner_id) a += '<button class="btn bad" type="button" data-del="' + l.id + '" data-paid="' + (paid ? 1 : 0) + '">' + ic("trash", 18) + "O'chirish</button>";
     return '<article class="lc"><div class="ph">' + (l.image ? '<img src="' + esc(l.image) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : ic("photo", 40)) +
       '<span class="b acc">' + esc(l.category) + "</span>" + (l.photos ? '<span class="n">' + num(l.photos) + " rasm</span>" : "") + "</div>" +
-      '<div class="bd"><div class="row" style="justify-content:space-between;gap:8px"><span class="mut" style="font-size:13px">№ ' + l.id + "</span><span class=\"row\" style=\"gap:6px\">" + (l.review_needed ? '<span class="b warn">To\'lov bilan faollashgan</span>' : paid ? '<span class="b acc">Pullik</span>' : "") + badge(LST, l.status) + "</span></div>" +
+      '<div class="bd"><div class="row" style="justify-content:space-between;gap:8px"><span class="mut" style="font-size:13px">№ ' + l.id + "</span><span class=\"row\" style=\"gap:6px\">" + (l.edited_at && (l.status === "pending" || l.review_needed) ? '<span class="b acc">Tahrirlangan</span>' : "") + (l.review_needed && !l.edited_at ? '<span class="b warn">To\'lov bilan faollashgan</span>' : paid && !l.review_needed ? '<span class="b acc">Pullik</span>' : "") + badge(LST, l.status) + "</span></div>" +
       "<h3>" + esc(l.title) + '</h3><span class="pr">' + esc(l.price) + "</span>" +
       '<span class="mut" style="font-size:14px;display:flex;gap:6px;align-items:center">' + ic("pin", 16) + esc(l.city + ", " + l.address) + "</span>" +
       (l.details ? '<span style="font-size:14px">' + esc(l.details) + "</span>" : "") +
