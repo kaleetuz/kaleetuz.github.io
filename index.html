@@ -155,6 +155,10 @@ details p{padding-bottom:20px;font-size:16px;line-height:1.55;color:var(--tx2)}
 .ftr .wrap{padding-top:32px;padding-bottom:40px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:18px;font-size:14px;color:var(--tx2)}
 .ftr nav{display:flex;flex-wrap:wrap;gap:8px 22px}
 .ftr a:hover{color:var(--tx)}
+.soc{order:3}
+.soc a{display:inline-flex;align-items:center;gap:7px;min-height:32px}
+.soc svg{width:18px;height:18px;fill:currentColor;flex:none}
+.contacts b span{color:inherit;font-size:inherit;text-align:inherit}
 
 .toast{position:fixed;left:16px;right:16px;bottom:24px;margin:0 auto;width:fit-content;max-width:420px;transform:translateY(20px);opacity:0;pointer-events:none;padding:14px 22px;border-radius:24px;background:var(--tx);color:var(--bg);font-size:15px;font-weight:500;transition:opacity .25s,transform .25s;z-index:50;text-align:center}
 .toast.on{opacity:1;transform:none}
@@ -204,10 +208,11 @@ details p{padding-bottom:20px;font-size:16px;line-height:1.55;color:var(--tx2)}
   .call small{font-size:13px}
   .call strong{font-size:24px}
   .call .ci{width:48px;height:48px}
-  .contacts{flex:none;align-self:stretch;padding:0;border:0;background:none;display:grid;grid-template-columns:1fr;gap:8px}
+  .contacts{flex:none;align-self:stretch;padding:0;border:0;background:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
   .contacts a,.contacts div{min-height:52px;border:0;border-radius:26px;background:var(--bg2);justify-content:center;font-size:16px}
   .contacts b{font-weight:500}
-  .contacts span,.contacts .d-row{display:none}
+  .contacts>a>span,.contacts .d-row{display:none}
+  .soc{order:0;gap:6px 22px}
   .faq{padding:32px 16px 0;gap:14px}
   .faq .h2{text-align:left;padding:0 4px}
   .qs{gap:8px}
@@ -365,6 +370,7 @@ details p{padding-bottom:20px;font-size:16px;line-height:1.55;color:var(--tx2)}
 </a>
 </div>
 <div class="contacts">
+<a href="https://t.me/kaleet_support" target="_blank" rel="noopener"><b><span class="d-only" data-i="tg_sup">Telegram orqali yozish</span><span class="m-only">Telegram</span></b><span>@kaleet_support ›</span></a>
 <a href="mailto:kaleet.support@gmail.com"><b data-i="mail">Elektron pochta</b><span>kaleet.support@gmail.com ›</span></a>
 <div class="d-row"><b data-i="inapp">Ilova ichida</b><span data-i="inapp_v">Menyu → Yordam</span></div>
 </div>
@@ -406,6 +412,10 @@ details p{padding-bottom:20px;font-size:16px;line-height:1.55;color:var(--tx2)}
 <a href="terms.html" data-i="terms">Foydalanish shartlari</a>
 <a href="delete-account.html" data-i="delacc">Hisobni o'chirish</a>
 </nav>
+<nav class="soc" aria-label="Ijtimoiy tarmoqlar">
+<a href="https://t.me/kaleet_uz" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4 4.3 2.9 11.4c-1.2.5-1.2 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.1.9.8.9.5 0 .7-.2 1-.5l2.3-2.2 4.8 3.5c.9.5 1.5.2 1.7-.8l3.1-14.7c.3-1.3-.5-1.9-1.5-1.4zM8.1 14.1l10.3-6.5c.5-.3.9-.1.6.2l-8.8 7.9-.3 3.6z"/></svg><span data-i="tg_ch">Telegram kanal</span></a>
+<a href="https://www.instagram.com/kaleet.uz" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7.3A4.7 4.7 0 1 0 12 16.7 4.7 4.7 0 0 0 12 7.3zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm6-7.9a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0zM12 3.6c2.7 0 3 0 4.1.1 2.7.1 4 1.4 4.1 4.1.1 1.1.1 1.4.1 4.1s0 3-.1 4.1c-.1 2.7-1.4 4-4.1 4.1-1.1.1-1.4.1-4.1.1s-3 0-4.1-.1c-2.7-.1-4-1.4-4.1-4.1-.1-1.1-.1-1.4-.1-4.1s0-3 .1-4.1c.1-2.7 1.4-4 4.1-4.1 1.1-.1 1.4-.1 4.1-.1zM12 2c-2.7 0-3.1 0-4.2.1C4.2 2.2 2.2 4.2 2.1 7.8 2 8.9 2 9.3 2 12s0 3.1.1 4.2c.2 3.6 2.1 5.6 5.7 5.7 1.1.1 1.5.1 4.2.1s3.1 0 4.2-.1c3.6-.2 5.6-2.1 5.7-5.7.1-1.1.1-1.5.1-4.2s0-3.1-.1-4.2c-.2-3.6-2.1-5.6-5.7-5.7C15.1 2 14.7 2 12 2z"/></svg><span>Instagram</span></a>
+</nav>
 </div>
 </footer>
 
@@ -444,7 +454,7 @@ var RU = {
   s3n:"Шаг 3", s3:"Общайтесь с клиентами", s3p:"После проверки объявление публикуется — заинтересованные свяжутся с вами напрямую.",
   sup_e:"Поддержка", sup_h:"Есть вопрос? Мы поможем.", sup_hm:"Есть вопрос? Позвоните нам.",
   sup_p:"Колл-центр поможет с размещением объявлений, оплатой, аккаунтом и жалобами.",
-  call:"Колл-центр", mail:"Электронная почта", inapp:"В приложении", inapp_v:"Меню → Помощь",
+  call:"Колл-центр", mail:"Электронная почта", inapp:"В приложении", tg_sup:"Написать в Telegram", tg_ch:"Telegram-канал", inapp_v:"Меню → Помощь",
   faq_h:"Частые вопросы",
   q1:"Размещение объявлений платное?", a1:"Каждому пользователю 1 активное объявление бесплатно. Дополнительные объявления, а также поднятие, TOP и VIP — платные.",
   q2:"Когда появится моё объявление?", a2:"Обычные объявления публикуются после модерации. Объявление с платной услугой активируется сразу.",
