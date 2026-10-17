@@ -308,17 +308,17 @@
   function statsPage() {
     root.innerHTML = shell("stats", header("Statistika", "Yuklanmoqda…") + '<div class="loading">Ma\'lumotlar olinmoqda…</div>');
     var load = function () {
-      return Promise.all([rpc("admin_stats"), rpc("admin_daily", { p_days: PER })]).then(function (r) {
+      return Promise.all([rpc("admin_stats"), rpc("admin_daily", { p_days: PER }), rpc("admin_sold_stats").catch(function () { return null })]).then(function (r) {
         if (route().name !== "stats") return;
         setNavCounts(r[0]);
-        root.innerHTML = shell("stats", statsView(r[0], r[1]));
+        root.innerHTML = shell("stats", statsView(r[0], r[1], r[2]));
       });
     };
     load().catch(showErr);
     clearInterval(REFRESH);
     REFRESH = setInterval(function () { if (route().name === "stats" && !document.hidden && !$(".dlg")) load().catch(function () {}) }, 30000);
   }
-  function statsView(s, days) {
+  function statsView(s, days, sold) {
     var on = s.online_registered + s.online_guests, d = new Date(s.now);
     var dn = ["Yakshanba", "Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba"][d.getDay()];
     var ls = s.listings_by_status || {}, tracking = !!s.tracking_since;
@@ -338,7 +338,9 @@
     h += '<section class="minis" aria-label="Qo\'shimcha ko\'rsatkichlar">' +
       mini("Bugun ro'yxatdan o'tgan", num(s.users_today)) + mini("Bugungi e'lonlar", num(s.listings_today)) +
       mini("Kunlik faol (DAU)", tracking ? num(s.dau) : "—") + mini("Oylik faol (MAU)", tracking ? num(s.mau) : "—") +
-      mini("Yangi shikoyatlar", num(s.reports_new)) + mini("Bloklanganlar", num(s.users_blocked)) + "</section>";
+      mini("Yangi shikoyatlar", num(s.reports_new)) + mini("Bloklanganlar", num(s.users_blocked)) +
+      (sold ? mini("Ilova orqali sotildi", num(sold.sold) + (sold.sold_7d ? ' <small style="color:var(--ok);font-size:12px">+' + num(sold.sold_7d) + " 7 kunda</small>" : "")) +
+        mini("Ijaraga berildi", num(sold.rented) + (sold.rented_7d ? ' <small style="color:var(--ok);font-size:12px">+' + num(sold.rented_7d) + " 7 kunda</small>" : "")) : "") + "</section>";
 
     var mx = 1; days.forEach(function (x) { mx = Math.max(mx, x.users, x.listings) });
     var every = days.length > 31 ? 7 : days.length > 14 ? 3 : 1;
@@ -550,10 +552,11 @@
     if (l.owner_id) a += '<button class="btn bad" type="button" data-del="' + l.id + '" data-paid="' + (paid ? 1 : 0) + '">' + ic("trash", 18) + "O'chirish</button>";
     return '<article class="lc"><div class="ph">' + (l.image ? '<img src="' + esc(l.image) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : ic("photo", 40)) +
       '<span class="b acc">' + esc(l.category) + "</span>" + (l.photos ? '<span class="n">' + num(l.photos) + " rasm</span>" : "") + "</div>" +
-      '<div class="bd"><div class="row" style="justify-content:space-between;gap:8px"><span class="mut" style="font-size:13px">№ ' + l.id + "</span><span class=\"row\" style=\"gap:6px\">" + (l.deal === "rent" ? '<span class="b acc">Ijara</span>' : "") + (l.edited_at && (l.status === "pending" || l.review_needed) ? '<span class="b acc">Tahrirlangan</span>' : "") + (l.review_needed && !l.edited_at ? '<span class="b warn">To\'lov bilan faollashgan</span>' : paid && !l.review_needed ? '<span class="b acc">Pullik</span>' : "") + badge(LST, l.status) + "</span></div>" +
+      '<div class="bd"><div class="row" style="justify-content:space-between;gap:8px"><span class="mut" style="font-size:13px">№ ' + l.id + "</span><span class=\"row\" style=\"gap:6px\">" + (l.deal === "rent" ? '<span class="b acc">Ijara</span>' : "") + (l.closed_reason ? '<span class="b ok">' + (l.closed_reason === "rented" ? "Ijaraga berildi" : "Sotildi") + "</span>" : "") + (l.edited_at && (l.status === "pending" || l.review_needed) ? '<span class="b acc">Tahrirlangan</span>' : "") + (l.review_needed && !l.edited_at ? '<span class="b warn">To\'lov bilan faollashgan</span>' : paid && !l.review_needed ? '<span class="b acc">Pullik</span>' : "") + badge(LST, l.status) + "</span></div>" +
       "<h3>" + esc(l.title) + '</h3><span class="pr">' + esc(l.price) + (l.deal === "rent" ? " / oy" : "") + "</span>" +
       '<span class="mut" style="font-size:14px;display:flex;gap:6px;align-items:center">' + ic("pin", 16) + esc(l.city + ", " + l.address) + "</span>" +
       (l.details ? '<span style="font-size:14px">' + esc(l.details) + "</span>" : "") +
+      (l.dups && l.dups.length ? '<div class="box dup"><small>⚠ O\'xshash e\'lon bor</small><span>' + l.dups.map(function (x) { return '<a class="link" href="#/listings?s=all&q=' + x + '">№ ' + x + "</a>" }).join(", ") + ' — bir xil telefon yoki egasi, tur va xonalar soni</span></div>' : "") +
       (l.moderation_note ? '<div class="box"><small>Moderator izohi</small><span>' + esc(l.moderation_note) + "</span></div>" : "") + promoBox(l) +
       (l.note ? '<div class="box"><small>Tavsif</small><span style="white-space:pre-line">' + esc(l.note) + "</span></div>" : "") +
       (l.owner_phone ? '<span class="mut" style="font-size:13px">Tel: +' + esc(String(l.owner_phone).replace(/^\+/, "")) + "</span>" : "") +
