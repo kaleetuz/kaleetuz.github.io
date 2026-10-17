@@ -464,7 +464,7 @@
         "<dt>Oxirgi faollik</dt><dd>" + (dv.last_seen ? ago(dv.last_seen) : "—") + "</dd></dl></section>";
       var ll = u.listings || [];
       h += '<section class="card"><div class="ch"><h2>E\'lonlari</h2>' + (ll.length ? '<span>' + num(ll.length) + " ta</span>" : "") + "</div>" + (ll.length ? "<div>" + ll.map(function (l) {
-        return '<div class="li"><span style="min-width:0"><b>' + esc(l.title) + "</b><small>" + esc(l.category + " · " + l.city + " · " + l.price + " · " + dOnly(l.created_at)) +
+        return '<div class="li"><span style="min-width:0"><b>' + esc(l.title) + "</b><small>" + esc((l.deal === "rent" ? "Ijara · " : "") + l.category + " · " + l.city + " · " + l.price + (l.deal === "rent" ? " / oy" : "") + " · " + dOnly(l.created_at)) +
           (l.moderation_note ? " · " + esc(l.moderation_note) : "") + "</small></span>" + badge(LST, l.status) + "</div>";
       }).join("") + "</div>" : '<p class="mut" style="margin:0">E\'lon joylamagan</p>') + "</section>";
       var ra = u.reports_against || [], ws = u.warnings || [];
@@ -550,8 +550,8 @@
     if (l.owner_id) a += '<button class="btn bad" type="button" data-del="' + l.id + '" data-paid="' + (paid ? 1 : 0) + '">' + ic("trash", 18) + "O'chirish</button>";
     return '<article class="lc"><div class="ph">' + (l.image ? '<img src="' + esc(l.image) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : ic("photo", 40)) +
       '<span class="b acc">' + esc(l.category) + "</span>" + (l.photos ? '<span class="n">' + num(l.photos) + " rasm</span>" : "") + "</div>" +
-      '<div class="bd"><div class="row" style="justify-content:space-between;gap:8px"><span class="mut" style="font-size:13px">№ ' + l.id + "</span><span class=\"row\" style=\"gap:6px\">" + (l.edited_at && (l.status === "pending" || l.review_needed) ? '<span class="b acc">Tahrirlangan</span>' : "") + (l.review_needed && !l.edited_at ? '<span class="b warn">To\'lov bilan faollashgan</span>' : paid && !l.review_needed ? '<span class="b acc">Pullik</span>' : "") + badge(LST, l.status) + "</span></div>" +
-      "<h3>" + esc(l.title) + '</h3><span class="pr">' + esc(l.price) + "</span>" +
+      '<div class="bd"><div class="row" style="justify-content:space-between;gap:8px"><span class="mut" style="font-size:13px">№ ' + l.id + "</span><span class=\"row\" style=\"gap:6px\">" + (l.deal === "rent" ? '<span class="b acc">Ijara</span>' : "") + (l.edited_at && (l.status === "pending" || l.review_needed) ? '<span class="b acc">Tahrirlangan</span>' : "") + (l.review_needed && !l.edited_at ? '<span class="b warn">To\'lov bilan faollashgan</span>' : paid && !l.review_needed ? '<span class="b acc">Pullik</span>' : "") + badge(LST, l.status) + "</span></div>" +
+      "<h3>" + esc(l.title) + '</h3><span class="pr">' + esc(l.price) + (l.deal === "rent" ? " / oy" : "") + "</span>" +
       '<span class="mut" style="font-size:14px;display:flex;gap:6px;align-items:center">' + ic("pin", 16) + esc(l.city + ", " + l.address) + "</span>" +
       (l.details ? '<span style="font-size:14px">' + esc(l.details) + "</span>" : "") +
       (l.moderation_note ? '<div class="box"><small>Moderator izohi</small><span>' + esc(l.moderation_note) + "</span></div>" : "") + promoBox(l) +

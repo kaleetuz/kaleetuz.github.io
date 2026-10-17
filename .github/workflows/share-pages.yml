@@ -1,0 +1,26 @@
+name: E'lon sahifalari (ulashish uchun)
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: share-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sahifalarni yangilash
+        run: python3 tools/share_pages.py
+      - name: O'zgarish bo'lsa — saqlash
+        run: |
+          git add -A e
+          if git diff --cached --quiet; then echo "O'zgarish yo'q"; exit 0; fi
+          git config user.name "kaleet-bot"
+          git config user.email "kaleet-bot@users.noreply.github.com"
+          git commit -m "E'lon sahifalari yangilandi"
+          git push
