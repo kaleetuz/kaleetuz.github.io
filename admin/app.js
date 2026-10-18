@@ -502,7 +502,7 @@
     root.innerHTML = shell("listings", header("E'lonlar", "Yuklanmoqda…") +
       '<div class="tabs" id="lt" role="group" aria-label="E\'lon holati"></div>' +
       '<div class="row"><label class="search">' + ic("search", 18) + '<span class="sr">Qidirish</span><input id="lq" type="search" value="' + esc(LQ.q) + '" placeholder="Sarlavha, manzil, ism yoki e\'lon raqami"></label>' +
-      '<label><span class="sr">Mulk turi</span><select class="sel" id="lcat"><option value="">Barcha turlar</option>' + ["Hovli", "Kvartira", "Ofis", "Do'kon"].map(function (c) {
+      '<label><span class="sr">Mulk turi</span><select class="sel" id="lcat"><option value="">Barcha turlar</option>' + ["Hovli", "Kvartira", "Ofis", "Do'kon", "Yer maydoni", "Ombor", "O'quv markazi", "Biznes markazi", "Savdo markazi", "Restoran / Kafe"].map(function (c) {
         return '<option' + (LQ.cat === c ? " selected" : "") + ">" + esc(c) + "</option>";
       }).join("") + '</select></label><label><span class="sr">Hudud</span><select class="sel" id="lcity"><option value="">Barcha hududlar</option></select></label></div>' +
       '<div id="lg"><div class="loading">Yuklanmoqda…</div></div>');
