@@ -76,8 +76,8 @@ main{padding:16px 0 150px}
 <script>
 (function(){
 var SB="https://mbtswvehjtmcheocgosf.supabase.co",KEY="sb_publishable_ZVv4y53suvbbAI7UXZdwTw_kkvlGnTm",RU=/^ru/i.test(navigator.language||"");
-var T={uz:{get:"Ilovani olish",open:"Ilovada ochish",dl:"Ilovani yuklab olish",rl:"Rieltor",sl:"Sotuvchi",vf:"Raqam tasdiqlangan",a:"Faol e'lon",s:"Sotilgan",f:"Obunachi",nf:"Sotuvchi topilmadi",nfp:"Havola eskirgan bo'lishi mumkin.",home:"Bosh sahifa",oy:"/ oy",err:"Yuklab bo'lmadi",errp:"Internet aloqasini tekshirib, sahifani yangilang."},
- ru:{get:"Скачать",open:"Открыть в приложении",dl:"Скачать приложение",rl:"Риелтор",sl:"Продавец",vf:"Номер подтверждён",a:"Активных",s:"Продано",f:"Подписчиков",nf:"Продавец не найден",nfp:"Возможно, ссылка устарела.",home:"На главную",oy:"/ мес",err:"Не удалось загрузить",errp:"Проверьте интернет и обновите страницу."}}[RU?"ru":"uz"];
+var T={uz:{get:"Ilovani olish",open:"Ilovada ochish",dl:"Ilovani yuklab olish",rl:"Rieltor",sl:"Sotuvchi",a:"Faol e'lon",s:"Sotilgan",f:"Obunachi",nf:"Sotuvchi topilmadi",nfp:"Havola eskirgan bo'lishi mumkin.",home:"Bosh sahifa",oy:"/ oy",err:"Yuklab bo'lmadi",errp:"Internet aloqasini tekshirib, sahifani yangilang."},
+ ru:{get:"Скачать",open:"Открыть в приложении",dl:"Скачать приложение",rl:"Риелтор",sl:"Продавец",a:"Активных",s:"Продано",f:"Подписчиков",nf:"Продавец не найден",nfp:"Возможно, ссылка устарела.",home:"На главную",oy:"/ мес",err:"Не удалось загрузить",errp:"Проверьте интернет и обновите страницу."}}[RU?"ru":"uz"];
 if(RU){document.documentElement.lang="ru";document.querySelectorAll("[data-i]").forEach(function(e){if(T[e.dataset.i])e.textContent=T[e.dataset.i]})}
 var id=(/[?&]id=([0-9a-f-]{36})/i.exec(location.search)||/\/u\/([0-9a-f-]{36})/i.exec(location.pathname)||[])[1],m=document.getElementById("m");
 function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -86,7 +86,7 @@ function rpc(f,b){return fetch(SB+"/rest/v1/rpc/"+f,{method:"POST",headers:{apik
 if(!id){msg(T.nf,T.nfp);return}
 Promise.all([rpc("seller_profile",{p_id:id}),rpc("seller_listings",{p_id:id,p_sold:false})]).then(function(a){var p=a[0],L=a[1]||[];if(!p){msg(T.nf,T.nfp);return}
  document.title=p.name+" · Kaleet";var ph=/^https:/.test(p.photo||"")?p.photo:"";
- m.innerHTML='<div class="hd2"><div class="uav" style="'+(ph?'background-image:url('+esc(ph)+')':'')+'">'+(ph?'':esc(String(p.name||"K").charAt(0).toUpperCase()))+'</div><h1>'+esc(p.name)+'</h1><div class="bds"><span class="bdg">'+esc(p.role=="realtor"?T.rl:T.sl)+'</span>'+(p.verified?'<span class="bdg g">✓ '+esc(T.vf)+'</span>':'')+'</div></div>'
+ m.innerHTML='<div class="hd2"><div class="uav" style="'+(ph?'background-image:url('+esc(ph)+')':'')+'">'+(ph?'':esc(String(p.name||"K").charAt(0).toUpperCase()))+'</div><h1>'+esc(p.name)+'</h1><div class="bds"><span class="bdg">'+esc(p.role=="realtor"?T.rl:T.sl)+'</span>'+'</div></div>'
   +'<div class="st3"><div><b>'+(p.active||0)+'</b><span>'+T.a+'</span></div><div><b>'+(p.sold||0)+'</b><span>'+T.s+'</span></div><div><b>'+(p.followers||0)+'</b><span>'+T.f+'</span></div></div>'
   +(p.about?'<p class="ab">'+esc(p.about)+'</p>':'')
   +'<div class="ugr">'+L.map(function(l){var im=(l.images&&l.images[0])||(/^https:/.test(l.image||"")?l.image:""),g=l.gradient&&l.gradient.length==2?l.gradient:["#cfcfd4","#8e8e93"];
