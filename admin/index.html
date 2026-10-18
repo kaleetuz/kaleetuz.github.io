@@ -81,6 +81,7 @@ main>*{min-width:0;max-width:100%}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;align-items:start}
 .col{display:flex;flex-direction:column;gap:16px;min-width:0}
 .dot{width:8px;height:8px;border-radius:4px;background:var(--ok);display:inline-block}
+.ib.spin svg{animation:rot .8s linear infinite}@keyframes rot{to{transform:rotate(360deg)}}
 .pulse{animation:p 1.8s ease-in-out infinite}@keyframes p{50%{opacity:.35}}
 .split2{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--bg3)}
 .split2 span{display:block;height:100%}

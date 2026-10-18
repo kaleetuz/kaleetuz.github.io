@@ -294,8 +294,9 @@
       '<button class="ib ghost" type="button" data-act="logout" aria-label="Chiqish">' + ic("out") + "</button></div>" +
       '</aside><main id="main">' + body + "</main></div>";
   }
+  function reloadBtn() { return '<button class="ib" type="button" data-act="reload" aria-label="Yangilash" title="Yangilash">' + ic("refresh") + "</button>" }
   function header(title, sub, extra) {
-    return '<header class="hd"><div><h1>' + esc(title) + "</h1>" + (sub ? "<p>" + sub + "</p>" : "") + '</div><div class="tools">' + (extra || "") +
+    return '<header class="hd"><div><h1>' + esc(title) + "</h1>" + (sub ? "<p>" + sub + "</p>" : "") + '</div><div class="tools">' + (extra || "") + reloadBtn() +
       '<button class="ib mob" type="button" data-act="logout" aria-label="Chiqish">' + ic("out") + "</button>" + themeBtn() + "</div></header>";
   }
   function setNavCounts(st) {
@@ -322,8 +323,7 @@
     var on = s.online_registered + s.online_guests, d = new Date(s.now);
     var dn = ["Yakshanba", "Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba"][d.getDay()];
     var ls = s.listings_by_status || {}, tracking = !!s.tracking_since;
-    var h = header("Statistika", esc(dn + ", " + dt(s.now)) + " holatiga · har 30 soniyada yangilanadi",
-      '<button class="ib" type="button" data-act="reload" aria-label="Yangilash">' + ic("refresh") + "</button>");
+    var h = header("Statistika", esc(dn + ", " + dt(s.now)) + " holatiga · har 30 soniyada yangilanadi");
 
     h += '<section class="kpis" aria-label="Asosiy ko\'rsatkichlar">' +
       kpi("Ro'yxatdan o'tganlar", num(s.users_total), '<span class="s up">+' + num(s.users_7d) + " so'nggi 7 kunda</span>") +
@@ -405,7 +405,7 @@
     loadUsers();
   }
   function loadUsers() {
-    rpc("admin_users", { p_search: UQ.q, p_filter: UQ.f, p_limit: UPS, p_offset: UQ.page * UPS }).then(function (r) {
+    return rpc("admin_users", { p_search: UQ.q, p_filter: UQ.f, p_limit: UPS, p_offset: UQ.page * UPS }).then(function (r) {
       if (route().name !== "users") return;
       var c = r.counts || {};
       $(".hd p").textContent = "Jami " + num(c.all) + " ta ro'yxatdan o'tgan";
@@ -441,7 +441,7 @@
       if (route().name !== "user") return;
       var ls = u.listings_by_status || {}, total = 0; Object.keys(ls).forEach(function (k) { total += ls[k] });
       var dv = u.device || {};
-      var h = '<div class="hd"><a href="#/users" class="btn soft" style="background:transparent;padding:0;color:var(--tx2)">' + ic("left", 18) + 'Foydalanuvchilar</a><div class="tools">' + themeBtn() + "</div></div>";
+      var h = '<div class="hd"><a href="#/users" class="btn soft" style="background:transparent;padding:0;color:var(--tx2)">' + ic("left", 18) + 'Foydalanuvchilar</a><div class="tools">' + reloadBtn() + themeBtn() + "</div></div>";
       h += '<section class="prof">' + av("pa", u.id, u.name, u.email) + '<div style="flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:8px"><h1>' +
         esc(u.name || "Ism kiritilmagan") + '</h1><span class="mut">' + esc(u.email || u.phone || "") + (u.provider ? " · " + esc(PROV[u.provider] || u.provider) + " orqali" : "") + "</span>" +
         '<div class="row" style="gap:8px">' + (u.blocked ? '<span class="b bad">Bloklangan</span>' : '<span class="b ok">Faol</span>') +
@@ -512,7 +512,7 @@
     loadListings();
   }
   function loadListings() {
-    rpc("admin_listings", { p_status: LQ.s, p_search: LQ.q, p_category: LQ.cat, p_city: LQ.city, p_limit: LPS, p_offset: LQ.page * LPS }).then(function (r) {
+    return rpc("admin_listings", { p_status: LQ.s, p_search: LQ.q, p_category: LQ.cat, p_city: LQ.city, p_limit: LPS, p_offset: LQ.page * LPS }).then(function (r) {
       if (route().name !== "listings") return;
       var c = r.counts || {}, all = 0; Object.keys(c).forEach(function (k) { all += c[k] });
       NAVC.pending = c.pending || 0; NAVC.review = c.review || 0;
@@ -604,7 +604,7 @@
     loadReports();
   }
   function loadReports() {
-    rpc("admin_reports", { p_status: RQ.s }).then(function (r) {
+    return rpc("admin_reports", { p_status: RQ.s }).then(function (r) {
       if (route().name !== "reports") return;
       var c = r.counts || {}; NAVC.reports = c["new"] || 0;
       var rows = r.rows || [];
@@ -682,7 +682,7 @@
     if (d.act === "theme") { save(TK, theme() === "dark" ? "light" : "dark"); applyTheme(); $$('[data-act="theme"]').forEach(function (b) { b.innerHTML = ic(theme() === "dark" ? "sun" : "moon") }); return }
     if (d.act === "pw") { var i = t.previousElementSibling; i.type = i.type === "password" ? "text" : "password"; t.setAttribute("aria-label", i.type === "password" ? "Parolni ko'rsatish" : "Parolni yashirish"); return }
     if (d.act === "logout") { signOut(false); return }
-    if (d.act === "reload") { statsPage(); return }
+    if (d.act === "reload") { reloadPage(t); return }
     if (d.per) { PER = +d.per; statsPage(); return }
     if (d.uf) { UQ.f = d.uf; UQ.page = 0; loadUsers(); return }
     if (d.pg) { var p = d.pg.split(":"); if (p[0] === "u") { UQ.page = Math.max(0, UQ.page + +p[1]); loadUsers() } else { LQ.page = Math.max(0, LQ.page + +p[1]); loadListings() } window.scrollTo(0, 0); return }
@@ -761,6 +761,22 @@
       });
     }
   });
+
+  /* ---------- Yangilash tugmasi: joriy bo'limni filtr, qidiruv va sahifani saqlagan holda qayta yuklaydi ---------- */
+  function reloadPage(btn) {
+    if (btn.classList.contains("spin")) return;
+    PHOTO = {}; PHOTO_OFF = false;                 /* yangi qo'yilgan profil rasmlari ham ko'rinsin */
+    btn.classList.add("spin"); btn.setAttribute("aria-busy", "true");
+    var r = route(), p;
+    if (r.name === "users") p = loadUsers();
+    else if (r.name === "listings") p = loadListings();
+    else if (r.name === "reports") p = loadReports();
+    else if (r.name === "user") { userPage(r.id); return }
+    else { render(); return }                       /* statistika, daromad, adminlar — sahifa to'liq qayta chiziladi */
+    Promise.resolve(p).then(function () {
+      btn.classList.remove("spin"); btn.removeAttribute("aria-busy");
+    });
+  }
 
   /* ---------- marshrutlash ---------- */
   function route() {
