@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kaleet — sotuvchi</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kaleet">
+<meta property="og:title" content="Kaleet — sotuvchi sahifasi">
+<meta property="og:description" content="Soting, sotib oling, ijaraga bering va oling — butun O'zbekiston bo'ylab.">
+<meta property="og:image" content="https://kaleet.uz/assets/apple-touch-icon.png">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<style>
+@font-face{font-family:"KInter";src:url("/assets/fonts/InterVariable.woff2") format("woff2");font-weight:100 900;font-display:swap}
+:root{--bg:#fff;--bg2:#f2f2f7;--bg3:#e5e5ea;--tx:#000;--tx2:#6c6c70;--ln:rgba(60,60,67,.14);--bar:rgba(255,255,255,.72);color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#000;--bg2:#1c1c1e;--bg3:#2c2c2e;--tx:#fff;--tx2:#98989f;--ln:rgba(235,235,245,.16);--bar:rgba(24,24,27,.66)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","KInter","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.4}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:640px;margin:0 auto;padding:0 20px}
+.hdr{position:sticky;top:0;z-index:5;background:var(--bar);-webkit-backdrop-filter:saturate(200%) blur(24px);backdrop-filter:saturate(200%) blur(24px);border-bottom:.5px solid var(--ln)}
+.hdr .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{display:flex;align-items:center;gap:9px}
+.logo svg{width:26px;height:26px;fill:currentColor}
+.logo span{font-size:22px;letter-spacing:-.03em}
+.hdr .get{height:36px;padding:0 16px;border-radius:18px;background:var(--bg2);display:inline-flex;align-items:center;font-size:15px;font-weight:500}
+main{padding:16px 0 150px}
+.gal{position:relative;border-radius:24px;overflow:hidden;background:var(--bg2);aspect-ratio:4/3}
+.gtr{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.gtr::-webkit-scrollbar{display:none}
+.gtr img{flex:none;width:100%;height:100%;object-fit:cover;scroll-snap-align:start}
+.gal .ph{display:grid;place-items:center;width:100%;height:100%;color:rgba(255,255,255,.75)}
+.gal .ph svg{width:64px;height:64px;fill:none;stroke:currentColor;stroke-width:1.5}
+.tag{position:absolute;left:12px;bottom:12px;height:28px;padding:0 12px;border-radius:14px;background:var(--bar);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);font-size:13px;font-weight:500;display:flex;align-items:center}
+.cnt{position:absolute;right:12px;bottom:12px;height:28px;padding:0 10px;border-radius:14px;background:rgba(0,0,0,.45);color:#fff;font-size:13px;display:flex;align-items:center}
+.top{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-top:16px}
+.top h1{font-size:24px;font-weight:500;letter-spacing:-.02em;margin:0;line-height:1.2}
+.top .pr{font-size:24px;font-weight:500;white-space:nowrap}
+.pm{font-size:.62em;color:var(--tx2);font-weight:500}
+.addr{color:var(--tx2);font-size:16px;margin-top:4px}
+.sh{font-size:15px;font-weight:500;color:var(--tx2);margin:24px 4px 8px}
+.grp{background:var(--bg2);border-radius:18px}
+.fr{display:flex;justify-content:space-between;gap:16px;padding:14px 16px;font-size:17px}
+.fr+.fr{border-top:.5px solid var(--ln)}
+.fr span:last-child{text-align:right}
+.chs{display:flex;flex-wrap:wrap;gap:8px}
+.chs span{height:36px;padding:0 14px;border-radius:18px;background:var(--bg2);display:inline-flex;align-items:center;font-size:15px}
+.note{font-size:17px;white-space:pre-line}
+.foot{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:12px 0 calc(14px + env(safe-area-inset-bottom,0px));background:var(--bar);-webkit-backdrop-filter:saturate(200%) blur(24px);backdrop-filter:saturate(200%) blur(24px);border-top:.5px solid var(--ln)}
+.foot .wrap{display:grid;gap:8px}
+.btn{height:52px;border-radius:26px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;border:0;font-family:inherit;cursor:pointer}
+.b1{background:var(--tx);color:var(--bg)}.b2{background:var(--bg2);color:var(--tx)}
+.hint{font-size:13px;color:var(--tx2);text-align:center}
+.msg{text-align:center;padding:80px 20px}
+.msg b{display:block;font-size:22px;font-weight:500;margin-bottom:8px}
+.msg p{color:var(--tx2);margin:0 0 24px}
+.msg .btn{display:inline-flex;padding:0 28px}
+.sk{background:var(--bg2);border-radius:12px}
+.hd2{display:flex;flex-direction:column;align-items:center;text-align:center;padding:12px 0 0}
+.uav{width:96px;height:96px;border-radius:48px;display:grid;place-items:center;color:#fff;font-size:40px;font-weight:600;background:linear-gradient(180deg,#4fbf86,#2e8b57);background-size:cover;background-position:center}
+.hd2 h1{margin:12px 0 6px;font-size:26px;font-weight:600}
+.bds{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}.bdg{height:26px;padding:0 10px;border-radius:13px;background:var(--bg2);font-size:13px;font-weight:600;color:var(--tx2);display:inline-flex;align-items:center}.bdg.g{background:rgba(52,199,89,.14);color:#2fb350}
+.st3{display:grid;grid-template-columns:repeat(3,1fr);margin:18px 0 0;background:var(--bg2);border-radius:18px;padding:14px 0}.st3 div{text-align:center}.st3 div+div{border-left:.5px solid var(--ln)}.st3 b{display:block;font-size:22px;font-weight:600}.st3 span{font-size:13px;color:var(--tx2)}
+.ab{margin:14px 0 0;font-size:15px;line-height:1.45;white-space:pre-line}
+.ugr{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}.gc{background:var(--bg2);border-radius:18px;overflow:hidden}.gc .p{aspect-ratio:1;background-size:cover;background-position:center}.gc .i{padding:8px 10px 10px}.gc b{display:block;font-size:16px}.gc span{display:block;font-size:13px;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+</style>
+</head>
+<body>
+<header class="hdr"><div class="wrap"><a class="logo" href="/" aria-label="Kaleet"><svg viewBox="20 20 1400 1470" aria-hidden="true"><use href="#key"></use></svg><span>Kaleet</span></a><a class="get" href="/" data-i="get">Ilovani olish</a></div></header>
+<main class="wrap" id="m"><div class="hd2"><div class="uav sk" style="background:var(--bg2)"></div><div class="sk" style="height:26px;width:50%;margin-top:14px"></div></div></main>
+<div class="foot" id="ft" hidden><div class="wrap"><a class="btn b1" id="open" href="#" data-i="open">Ilovada ochish</a><a class="btn b2" href="/" data-i="dl">Ilovani yuklab olish</a></div></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><g id="key"><path d="M97 88L87 99L80 112L77 124L75 141L65 274L64 275L64 287L63 288L63 300L62 301L62 313L61 314L61 326L60 327L60 339L59 340L59 352L58 353L58 365L57 366L57 378L56 379L56 391L53 417L53 429L50 455L50 467L49 468L39 604L37 617L31 711L30 712L30 748L34 768L40 786L50 804L73 831L252 1010L295 1051L307 1060L323 1068L344 1075L365 1079L389 1079L405 1077L641 1032L753 1012L767 1012L791 1018L806 1030L867 1089L1245 1465L1250 1468L1265 1473L1288 1474L1289 1475L1362 1473L1380 1470L1390 1465L1403 1450L1406 1444L1408 1433L1408 1412L1409 1411L1408 1253L1407 1252L1406 1225L1402 1215L1374 1184L1341 1151L1330 1142L1321 1138L1310 1138L1300 1142L1255 1176L1238 1176L1230 1170L1184 1124L1175 1113L1172 1105L1172 1095L1174 1087L1191 1046L1196 1030L1197 1020L1194 1008L1181 991L1144 954L1113 927L1095 928L1079 937L1064 950L1046 963L1036 966L1029 965L1014 954L899 840L875 818L867 812L853 805L841 802L823 801L795 804L506 852L474 853L460 850L435 838L414 819L249 652L245 642L240 624L240 606L241 605L243 565L252 472L265 310L271 270L275 262L283 255L290 252L300 250L346 245L469 235L481 233L492 233L504 231L515 231L516 230L527 230L539 228L574 226L575 225L615 223L616 222L643 222L659 226L669 231L681 240L764 320L771 324L778 326L798 326L962 289L974 284L983 276L989 267L992 255L992 247L990 240L985 232L971 216L856 101L797 44L772 34L757 31L735 30L734 31L710 31L709 32L664 34L663 35L635 36L621 38L607 38L592 40L578 40L549 43L534 43L533 44L519 44L490 47L378 54L377 55L351 56L350 57L173 70L119 76L105 82Z"/><path d="M568 384L558 386L548 391L540 397L513 424L506 434L501 446L501 451L504 457L515 471L543 499L556 507L565 507L577 500L610 468L620 456L624 448L624 439L615 425L587 397L576 388Z"/><path d="M652 477L640 484L608 515L598 527L595 535L596 544L603 556L615 570L633 588L645 598L653 601L658 601L666 599L671 596L709 559L715 552L718 546L719 532L716 526L706 514L678 487L664 478Z"/><path d="M566 572L554 573L537 586L503 622L500 630L500 634L503 643L515 659L543 687L551 693L560 696L571 694L582 686L614 654L620 647L624 639L624 626L616 614L587 585L577 577Z"/><path d="M471 481L466 481L460 483L444 493L418 519L412 527L406 540L406 548L418 565L447 594L461 603L472 602L489 589L521 556L526 548L528 541L527 534L520 524L489 493L479 485Z"/></g></defs></svg>
+<script>
+(function(){
+var SB="https://mbtswvehjtmcheocgosf.supabase.co",KEY="sb_publishable_ZVv4y53suvbbAI7UXZdwTw_kkvlGnTm",RU=/^ru/i.test(navigator.language||"");
+var T={uz:{get:"Ilovani olish",open:"Ilovada ochish",dl:"Ilovani yuklab olish",rl:"Rieltor",sl:"Sotuvchi",vf:"Raqam tasdiqlangan",a:"Faol e'lon",s:"Sotilgan",f:"Obunachi",nf:"Sotuvchi topilmadi",nfp:"Havola eskirgan bo'lishi mumkin.",home:"Bosh sahifa",oy:"/ oy",err:"Yuklab bo'lmadi",errp:"Internet aloqasini tekshirib, sahifani yangilang."},
+ ru:{get:"Скачать",open:"Открыть в приложении",dl:"Скачать приложение",rl:"Риелтор",sl:"Продавец",vf:"Номер подтверждён",a:"Активных",s:"Продано",f:"Подписчиков",nf:"Продавец не найден",nfp:"Возможно, ссылка устарела.",home:"На главную",oy:"/ мес",err:"Не удалось загрузить",errp:"Проверьте интернет и обновите страницу."}}[RU?"ru":"uz"];
+if(RU){document.documentElement.lang="ru";document.querySelectorAll("[data-i]").forEach(function(e){if(T[e.dataset.i])e.textContent=T[e.dataset.i]})}
+var id=(/[?&]id=([0-9a-f-]{36})/i.exec(location.search)||/\/u\/([0-9a-f-]{36})/i.exec(location.pathname)||[])[1],m=document.getElementById("m");
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function msg(b,p){m.innerHTML='<div class="msg"><b>'+esc(b)+'</b><p>'+esc(p)+'</p><a class="btn b1" href="/">'+esc(T.home)+'</a></div>'}
+function rpc(f,b){return fetch(SB+"/rest/v1/rpc/"+f,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify(b)}).then(function(r){return r.json().then(function(j){if(!r.ok)throw j;return j})})}
+if(!id){msg(T.nf,T.nfp);return}
+Promise.all([rpc("seller_profile",{p_id:id}),rpc("seller_listings",{p_id:id,p_sold:false})]).then(function(a){var p=a[0],L=a[1]||[];if(!p){msg(T.nf,T.nfp);return}
+ document.title=p.name+" · Kaleet";var ph=/^https:/.test(p.photo||"")?p.photo:"";
+ m.innerHTML='<div class="hd2"><div class="uav" style="'+(ph?'background-image:url('+esc(ph)+')':'')+'">'+(ph?'':esc(String(p.name||"K").charAt(0).toUpperCase()))+'</div><h1>'+esc(p.name)+'</h1><div class="bds"><span class="bdg">'+esc(p.role=="realtor"?T.rl:T.sl)+'</span>'+(p.verified?'<span class="bdg g">✓ '+esc(T.vf)+'</span>':'')+'</div></div>'
+  +'<div class="st3"><div><b>'+(p.active||0)+'</b><span>'+T.a+'</span></div><div><b>'+(p.sold||0)+'</b><span>'+T.s+'</span></div><div><b>'+(p.followers||0)+'</b><span>'+T.f+'</span></div></div>'
+  +(p.about?'<p class="ab">'+esc(p.about)+'</p>':'')
+  +'<div class="ugr">'+L.map(function(l){var im=(l.images&&l.images[0])||(/^https:/.test(l.image||"")?l.image:""),g=l.gradient&&l.gradient.length==2?l.gradient:["#cfcfd4","#8e8e93"];
+    return '<a class="gc" href="/e/'+l.id+'/"><div class="p" style="'+(im?'background-image:url('+esc(im)+')':'background:linear-gradient(145deg,'+esc(g[0])+','+esc(g[1])+')')+'"></div><div class="i"><b>'+esc(l.price)+(l.deal=="rent"?' <small style="color:var(--tx2)">'+T.oy+'</small>':'')+'</b><span>'+esc(l.title)+'</span></div></a>'}).join("")+'</div>';
+ document.getElementById("open").href="uz.kaleet.app://u/"+id;document.getElementById("ft").hidden=false},function(){msg(T.err,T.errp)});
+})();
+</script>
+</body>
+</html>
