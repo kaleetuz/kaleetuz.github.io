@@ -1,0 +1,14 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["86535585ZQ.uz.kaleet.app"],
+        "components": [
+          { "/": "/e/*", "comment": "E'lon sahifasi" },
+          { "/": "/u/*", "comment": "Sotuvchi sahifasi" }
+        ]
+      }
+    ]
+  },
+  "webcredentials": { "apps": ["86535585ZQ.uz.kaleet.app"] }
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "uz.kaleet.app",
+      "sha256_cert_fingerprints": [
+        "28:4A:30:55:07:00:9B:A0:C1:B4:4A:B3:CB:C9:7F:15:32:B5:1B:D6:B8:13:C8:4E:DD:C5:92:54:62:73:BE:CA"
+      ]
+    }
+  }
+]
