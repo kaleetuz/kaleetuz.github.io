@@ -692,7 +692,12 @@
     if (d.del) {
       ask({ title: "E'lonni o'chirish", text: "E'lon butunlay o'chiriladi. Egasiga sabab bilan xabar boradi." + (d.paid === "1" ? " Bu pullik e'lon — to'langan summa qaytarilmaydi." : ""),
             input: "Sabab (egasiga ko'rinadi)", ph: "Masalan: soxta rasmlar, noto'g'ri narx, takroriy e'lon", required: true, ok: "O'chirish", danger: true }).then(function (v) {
-        if (v) rpc("admin_delete_listing", { p_id: +d.del, p_reason: v }).then(function () { toast("E'lon o'chirildi, egasiga xabar yuborildi."); loadListings() }).catch(showErr);
+        if (v) rpc("admin_delete_listing", { p_id: +d.del, p_reason: v }).then(function (r) {
+          /* e'lon rasmlari va kichik nusxalari Storage'dan ham o'chiriladi (supabase/app_update_17.sql) */
+          var ps = r && Array.isArray(r.paths) ? r.paths : [];
+          var rm = ps.length ? token().then(function (tk) { return req("/storage/v1/object/listing-photos", { method: "DELETE", token: tk, body: { prefixes: ps } }) }).catch(function () {}) : Promise.resolve();
+          return rm.then(function () { toast("E'lon o'chirildi, egasiga xabar yuborildi."); loadListings() });
+        }).catch(showErr);
       });
       return;
     }
